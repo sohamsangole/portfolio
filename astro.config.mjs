@@ -3,6 +3,8 @@ import tailwind from '@astrojs/tailwind';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://sohamsangole.github.io',
+  base: '/portfolio',
   integrations: [tailwind({
     applyBaseStyles: false,
   })],
