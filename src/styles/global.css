@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg: #F7F7F5;
+  --color-text-primary: #111111;
+  --color-text-secondary: #777777;
+  --color-text-muted: #999999;
+  --color-border-subtle: #D9D9D5;
+  --color-border-light: #EAEAEA;
+  --color-row-hover: rgba(0, 0, 0, 0.035);
+  --color-modal-bg: #F7F7F5;
+  --color-cell-empty: #E8E8E4;
+  --color-cell-1: #9BE9A8;
+  --color-cell-2: #40C463;
+  --color-cell-3: #30A14E;
+  --color-cell-4: #216E39;
+}
+
+html.dark {
+  --color-bg: #111110;
+  --color-text-primary: #EDEDEC;
+  --color-text-secondary: #8E8E8A;
+  --color-text-muted: #666662;
+  --color-border-subtle: #282826;
+  --color-border-light: #20201E;
+  --color-row-hover: rgba(255, 255, 255, 0.04);
+  --color-modal-bg: #161615;
+  --color-cell-empty: #262624;
+  --color-cell-1: #0E4429;
+  --color-cell-2: #006D32;
+  --color-cell-3: #26A641;
+  --color-cell-4: #39D353;
+}
+
+.cell-level-0 { background-color: var(--color-cell-empty) !important; }
+.cell-level-1 { background-color: var(--color-cell-1) !important; }
+.cell-level-2 { background-color: var(--color-cell-2) !important; }
+.cell-level-3 { background-color: var(--color-cell-3) !important; }
+.cell-level-4 { background-color: var(--color-cell-4) !important; }
+
+@layer base {
+  html, body {
+    background-color: var(--color-bg);
+    color: var(--color-text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', 'Geist', 'Helvetica Neue', Arial, sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Text Selection Styling */
+::selection {
+  background-color: #111111 !important;
+  color: #F7F7F5 !important;
+}
+
+html.dark ::selection,
+html.dark *::selection,
+.dark ::selection,
+.dark *::selection {
+  background-color: #E2E2DF !important;
+  color: #111110 !important;
+}
+
+/* Silky smooth theme switching transition */
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition: background-color 220ms cubic-bezier(0.16, 1, 0.3, 1),
+              color 220ms cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 220ms cubic-bezier(0.16, 1, 0.3, 1),
+              fill 220ms cubic-bezier(0.16, 1, 0.3, 1),
+              stroke 220ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition-delay: 0s !important;
+}
+
+/* Explicit theme variable mapping */
+.bg-bg { background-color: var(--color-bg) !important; }
+.bg-modal-bg { background-color: var(--color-modal-bg) !important; }
+.text-text-primary { color: var(--color-text-primary) !important; }
+.text-text-secondary { color: var(--color-text-secondary) !important; }
+.text-text-muted { color: var(--color-text-muted) !important; }
+.border-border-subtle { border-color: var(--color-border-subtle) !important; }
+
+/* Custom minimal scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-subtle);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* Micro transitions */
+.transition-micro {
+  transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
