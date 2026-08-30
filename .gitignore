@@ -5,6 +5,9 @@ dist/
 # Dependencies
 node_modules/
 
+# TypeScript declarations
+src/env.d.ts
+
 # Environment variables
 .env
 .env.production
