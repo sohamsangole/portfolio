@@ -2,18 +2,21 @@
 import { PORTFOLIO_DATA } from '../data/portfolioData';
 
 // Generate mock contribution grid data (52 weeks x 7 days)
-const WEEKS = 52;
+const WEEKS = 53;
 const DAYS = 7;
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const DAY_LABELS = ['', 'Mon', '', 'Wed', '', 'Fri', ''];
+const ALL_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const curMonthIdx = new Date().getMonth();
+const ROLLING_MONTHS = [];
+for (let i = 0; i < 12; i++) {
+  ROLLING_MONTHS.push(ALL_MONTHS[(curMonthIdx + 1 + i) % 12]);
+}
 
 // Seeded pseudo-random activity levels (0 to 4) for realistic UI mockup
 const generateMockGrid = () => {
   const grid = [];
   for (let w = 0; w < WEEKS; w++) {
     const week = [];
-    // Realistic clustering: active periods in weeks 8-18, 24-36, 42-51
-    const inActiveCluster = (w >= 8 && w <= 18) || (w >= 24 && w <= 36) || (w >= 42 && w <= 51);
+    const inActiveCluster = (w >= 0 && w <= 10) || (w >= 14 && w <= 22) || (w >= 44 && w <= 52);
 
     for (let d = 0; d < DAYS; d++) {
       const seed = Math.sin(w * 7.13 + d * 19.87) * 10000;
@@ -26,9 +29,8 @@ const generateMockGrid = () => {
         if (rand > 0.91) level = 3;
         if (rand > 0.97) level = 4;
       } else {
-        if (rand > 0.82) level = 1;
-        if (rand > 0.94) level = 2;
-        if (rand > 0.98) level = 3;
+        if (rand > 0.85) level = 1;
+        if (rand > 0.95) level = 2;
       }
       
       const count = level === 0 ? 0 : level * 2 + Math.floor(rand * 3) + 1;
@@ -99,16 +101,16 @@ const contributionGrid = generateMockGrid();
     <!-- Quick Stats Row -->
     <div class="grid grid-cols-3 gap-3 py-4 border-b border-border-subtle/60 text-xs sm:text-sm font-mono">
       <div class="flex flex-col">
-        <span class="text-[10px] uppercase text-text-muted tracking-wider">2026 Activity</span>
-        <span class="text-base sm:text-lg font-medium text-text-primary mt-0.5">842 commits</span>
+        <span class="text-[10px] uppercase text-text-muted tracking-wider">Activity (1 Year)</span>
+        <span id="github-activity-total" class="text-base sm:text-lg font-medium text-text-primary mt-0.5">842 contributions</span>
       </div>
       <div class="flex flex-col">
         <span class="text-[10px] uppercase text-text-muted tracking-wider">Current Streak</span>
-        <span class="text-base sm:text-lg font-medium text-text-primary mt-0.5">18 days</span>
+        <span id="github-current-streak" class="text-base sm:text-lg font-medium text-text-primary mt-0.5">18 days</span>
       </div>
       <div class="flex flex-col">
         <span class="text-[10px] uppercase text-text-muted tracking-wider">Longest Streak</span>
-        <span class="text-base sm:text-lg font-medium text-text-primary mt-0.5">46 days</span>
+        <span id="github-longest-streak" class="text-base sm:text-lg font-medium text-text-primary mt-0.5">46 days</span>
       </div>
     </div>
 
@@ -116,8 +118,8 @@ const contributionGrid = generateMockGrid();
     <div class="py-5 overflow-x-auto">
       <div class="min-w-[640px]">
         <!-- Month Labels -->
-        <div class="flex justify-between pl-8 pr-2 pb-1.5 text-[10px] font-mono text-text-muted select-none">
-          {MONTHS.map(m => <span>{m}</span>)}
+        <div id="github-months-header" class="flex justify-between pl-8 pr-2 pb-1.5 text-[10px] font-mono text-text-muted select-none">
+          {ROLLING_MONTHS.map(m => <span>{m}</span>)}
         </div>
 
         <!-- Days & Grid Container -->
@@ -160,50 +162,170 @@ const contributionGrid = generateMockGrid();
 
     <!-- Active Projects Mention -->
     <div class="pt-3 border-t border-border-subtle flex items-center justify-between text-xs text-text-secondary">
-      <span>Latest commits to <strong class="font-mono text-text-primary">stella</strong> &amp; <strong class="font-mono text-text-primary">computemesh</strong></span>
-      <span class="font-mono text-[11px] text-text-muted">Live Sync (UI Mock)</span>
+      <span id="github-latest-repos">Latest commits to <strong class="font-mono text-text-primary">portfolio</strong> &amp; <strong class="font-mono text-text-primary">stella</strong></span>
     </div>
   </div>
 </div>
 
-<script>
-  function setupGithubModal() {
-    const trigger = document.getElementById('activity-modal-trigger');
-    const modal = document.getElementById('github-modal');
-    const backdrop = document.getElementById('github-modal-backdrop');
-    const closeBtn = document.getElementById('github-modal-close-btn');
+<script is:inline>
+  (function() {
+    var hasFetched = false;
 
-    function openModal() {
-      if (!modal) return;
-      modal.classList.remove('opacity-0', 'pointer-events-none');
-      modal.classList.add('opacity-100', 'pointer-events-auto');
-      modal.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
+    function fetchLiveGithubData() {
+      if (hasFetched) return;
+      hasFetched = true;
+
+      var totalEl = document.getElementById('github-activity-total');
+      var currentStreakEl = document.getElementById('github-current-streak');
+      var longestStreakEl = document.getElementById('github-longest-streak');
+      var gridEl = document.getElementById('github-contributions-grid');
+      var latestReposEl = document.getElementById('github-latest-repos');
+
+      // Fetch dynamic active repositories
+      fetch('https://api.github.com/users/sohamsangole/events/public')
+        .then(function(res) {
+          if (!res.ok) throw new Error('API error');
+          return res.json();
+        })
+        .then(function(events) {
+          if (!events || !Array.isArray(events)) return;
+          var repos = [];
+          events.forEach(function(ev) {
+            if (ev.type === 'PushEvent' && ev.repo && ev.repo.name) {
+              var repoName = ev.repo.name.replace(/^sohamsangole\//i, '');
+              if (repos.indexOf(repoName) === -1) {
+                repos.push(repoName);
+              }
+            }
+          });
+          if (repos.length > 0 && latestReposEl) {
+            if (repos.length === 1) {
+              latestReposEl.innerHTML = 'Latest commits to <strong class="font-mono text-text-primary">' + repos[0] + '</strong>';
+            } else {
+              latestReposEl.innerHTML = 'Latest commits to <strong class="font-mono text-text-primary">' + repos[0] + '</strong> &amp; <strong class="font-mono text-text-primary">' + repos[1] + '</strong>';
+            }
+          }
+        })
+        .catch(function() {});
+
+      // Fetch contribution activity
+      fetch('https://github-contributions-api.jogruber.de/v4/sohamsangole?y=last')
+        .then(function(res) {
+          if (!res.ok) throw new Error('API error');
+          return res.json();
+        })
+        .then(function(data) {
+          if (!data || !data.contributions || !Array.isArray(data.contributions)) return;
+
+          var contributions = data.contributions;
+          var totalCount = 0;
+          var maxStreak = 0;
+          var curStreak = 0;
+          var tempStreak = 0;
+
+          for (var i = 0; i < contributions.length; i++) {
+            var count = contributions[i].count || 0;
+            totalCount += count;
+            if (count > 0) {
+              tempStreak++;
+              if (tempStreak > maxStreak) maxStreak = tempStreak;
+            } else {
+              tempStreak = 0;
+            }
+          }
+
+          // Compute current active streak from end backwards
+          for (var i = contributions.length - 1; i >= 0; i--) {
+            if (contributions[i].count > 0) {
+              curStreak++;
+            } else if (i === contributions.length - 1) {
+              continue;
+            } else {
+              break;
+            }
+          }
+
+          if (totalEl) totalEl.textContent = totalCount + ' contributions';
+          if (currentStreakEl) currentStreakEl.textContent = curStreak + ' days';
+          if (longestStreakEl) longestStreakEl.textContent = maxStreak + ' days';
+
+          // Render live cells with accurate Sunday-to-Saturday row alignment
+          if (gridEl && contributions.length > 0) {
+            gridEl.innerHTML = '';
+
+            var firstDateStr = contributions[0].date;
+            var parts = firstDateStr.split('-');
+            var firstDate = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+            var startDay = firstDate.getDay(); // 0 = Sunday
+
+            for (var pad = 0; pad < startDay; pad++) {
+              var emptyPad = document.createElement('div');
+              emptyPad.className = 'w-[10px] h-[10px] rounded-[1.5px] opacity-0 pointer-events-none';
+              gridEl.appendChild(emptyPad);
+            }
+
+            contributions.forEach(function(c) {
+              var cell = document.createElement('div');
+              cell.className = 'w-[10px] h-[10px] rounded-[1.5px] cell-level-' + (c.level || 0) + ' transition-opacity duration-100 hover:opacity-80 cursor-pointer';
+              cell.title = c.count + ' contributions on ' + c.date;
+              gridEl.appendChild(cell);
+            });
+          }
+        })
+        .catch(function() {
+          if (statusEl) statusEl.textContent = 'Live Sync (Offline Fallback)';
+        });
     }
 
-    function closeModal() {
-      if (!modal) return;
-      modal.classList.remove('opacity-100', 'pointer-events-auto');
-      modal.classList.add('opacity-0', 'pointer-events-none');
-      modal.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = '';
-    }
+    function setupGithubModal() {
+      var trigger = document.getElementById('activity-modal-trigger');
+      var modal = document.getElementById('github-modal');
+      var backdrop = document.getElementById('github-modal-backdrop');
+      var closeBtn = document.getElementById('github-modal-close-btn');
 
-    trigger?.addEventListener('click', (e) => {
-      e.preventDefault();
-      openModal();
-    });
-
-    closeBtn?.addEventListener('click', closeModal);
-    backdrop?.addEventListener('click', closeModal);
-
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeModal();
+      function openModal() {
+        if (!modal) return;
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modal.classList.add('opacity-100', 'pointer-events-auto');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        fetchLiveGithubData();
       }
-    });
-  }
 
-  setupGithubModal();
-  document.addEventListener('astro:page-load', setupGithubModal);
+      function closeModal() {
+        if (!modal) return;
+        modal.classList.remove('opacity-100', 'pointer-events-auto');
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      trigger?.addEventListener('click', function(e) {
+        e.preventDefault();
+        openModal();
+      });
+
+      closeBtn?.addEventListener('click', closeModal);
+      backdrop?.addEventListener('click', closeModal);
+
+      window.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeModal();
+        }
+      });
+
+      // Background pre-fetch on idle
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(fetchLiveGithubData);
+      } else {
+        setTimeout(fetchLiveGithubData, 1000);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupGithubModal);
+    } else {
+      setupGithubModal();
+    }
+  })();
 </script>

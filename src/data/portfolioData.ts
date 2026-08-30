@@ -127,7 +127,7 @@ export const PORTFOLIO_DATA = {
       { name: "LINKEDIN", url: "https://linkedin.com/in/sohamsangole" },
       { 
         name: "EMAIL", 
-        url: "mailto:sasangole2019@gmail.com?subject=Hello%20Soham%20%E2%80%94%20Let's%20Connect&body=Hi%20Soham%2C%0A%0AI%20came%20across%20your%20portfolio%20and%20wanted%20to%20reach%20out%20regarding%20...%0A%0ABest%2C" 
+        url: "mailto:sasangole2019@gmail.com?subject=Hello%20Soham%20-%20Let's%20Connect&body=Hi%20Soham%2C%0A%0AI%20came%20across%20your%20portfolio%20and%20wanted%20to%20reach%20out%20regarding%20...%0A%0ABest%2C" 
       },
       { name: "RESUME", url: "#resume" },
     ]
