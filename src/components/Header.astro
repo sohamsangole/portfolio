@@ -1,0 +1,76 @@
+---
+import { PORTFOLIO_DATA } from '../data/portfolioData';
+---
+
+<header class="w-full flex items-center justify-between text-[11px] sm:text-xs tracking-[0.14em] font-mono select-none text-text-primary pt-1 pb-1">
+  <div class="font-medium">
+    {PORTFOLIO_DATA.header.name}
+  </div>
+  
+  <div class="flex items-center gap-3.5 text-text-secondary">
+    <span>{PORTFOLIO_DATA.header.year}</span>
+    <span class="text-border-subtle select-none">/</span>
+    <button 
+      id="theme-toggle-btn"
+      class="hover:text-text-primary focus:outline-none flex items-center gap-1.5 transition-colors cursor-pointer py-0.5 px-1 rounded hover:bg-black/[0.03] dark:hover:bg-white/[0.04]"
+      title="Toggle Dark / Light mode"
+      aria-label="Toggle theme"
+    >
+      <span id="theme-icon-light" class="hidden dark:inline text-text-secondary">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+      </span>
+      <span id="theme-icon-dark" class="inline dark:hidden text-text-secondary">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </span>
+      <span id="theme-text" class="text-[10px] tracking-widest uppercase text-text-muted"></span>
+    </button>
+  </div>
+</header>
+
+<script is:inline>
+  function setupThemeToggle() {
+    var toggleBtn = document.getElementById('theme-toggle-btn');
+    var themeText = document.getElementById('theme-text');
+
+    function syncTheme() {
+      var isDark = document.documentElement.classList.contains('dark');
+      if (themeText) {
+        themeText.textContent = isDark ? 'LIGHT' : 'DARK';
+      }
+    }
+
+    if (toggleBtn) {
+      toggleBtn.onclick = function(e) {
+        e.preventDefault();
+        document.documentElement.classList.add('theme-transition');
+        var isDark = document.documentElement.classList.toggle('dark');
+        try {
+          localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        } catch(err) {}
+        syncTheme();
+        setTimeout(function() {
+          document.documentElement.classList.remove('theme-transition');
+        }, 300);
+      };
+    }
+
+    syncTheme();
+  }
+
+  setupThemeToggle();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupThemeToggle);
+  }
+</script>

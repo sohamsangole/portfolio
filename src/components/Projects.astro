@@ -1,0 +1,16 @@
+---
+import { PORTFOLIO_DATA } from '../data/portfolioData';
+import ProjectRow from './ProjectRow.astro';
+---
+
+<section class="w-full flex flex-col justify-center py-0.5 sm:py-1">
+  <div class="text-[10px] sm:text-[11px] uppercase font-mono tracking-[0.14em] text-text-secondary font-medium mb-1 select-none">
+    PROJECTS
+  </div>
+
+  <div class="flex flex-col w-full divide-y divide-border-subtle/40">
+    {PORTFOLIO_DATA.projects.map((project) => (
+      <ProjectRow project={project} />
+    ))}
+  </div>
+</section>

@@ -1,0 +1,236 @@
+<!-- Quick Info / Contact Card Modal (Triggered by ⌘K / Ctrl+K / INFO button) -->
+<div 
+  id="quick-info-modal" 
+  class="fixed inset-0 z-50 items-center justify-center p-4 sm:p-6 transition-opacity duration-150"
+  style="display: none; opacity: 0; pointer-events: none;"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Quick Info Card"
+>
+  <!-- Backdrop -->
+  <div 
+    id="quick-info-backdrop"
+    class="absolute inset-0 bg-black/40 cursor-pointer"
+  ></div>
+
+  <!-- Spacious Editorial Card Container -->
+  <div 
+    id="quick-info-container"
+    class="relative w-full max-w-lg bg-modal-bg border border-border-subtle shadow-2xl p-7 sm:p-9 rounded-none text-xs z-10 select-none"
+  >
+    <!-- Top Header: Title & Close -->
+    <div class="flex items-start justify-between pb-5 border-b border-border-subtle">
+      <div>
+        <div class="text-[10px] font-mono text-text-muted uppercase tracking-widest mb-1">
+          INFO
+        </div>
+        <h3 class="text-xl font-medium text-text-primary tracking-tight font-sans">
+          Soham Sangole
+        </h3>
+        <p class="text-text-secondary text-xs mt-1 font-sans">
+          Software Engineer 1 · Bank of America
+        </p>
+      </div>
+
+      <!-- Close Button -->
+      <button 
+        id="quick-info-close-btn"
+        class="text-text-secondary hover:text-text-primary font-mono text-xs tracking-wider flex items-center gap-1.5 focus:outline-none transition-colors cursor-pointer py-1 px-1.5 -mr-1"
+        aria-label="Close modal"
+      >
+        <span class="text-[10px] uppercase font-mono text-text-muted">ESC</span>
+        <span class="text-base leading-none">✕</span>
+      </button>
+    </div>
+
+    <!-- Spacious Clean Info Rows -->
+    <div class="py-5 space-y-3.5 font-mono text-[11px] sm:text-xs">
+      <!-- Email -->
+      <div class="flex items-baseline justify-between gap-4">
+        <span class="text-text-muted w-20 flex-shrink-0">Email</span>
+        <a 
+          href="mailto:sasangole2019@gmail.com"
+          class="text-text-primary hover:text-black dark:hover:text-white underline underline-offset-4 decoration-border-subtle hover:decoration-text-primary transition-colors text-right"
+        >
+          sasangole2019@gmail.com
+        </a>
+      </div>
+
+      <!-- Location -->
+      <div class="flex items-baseline justify-between gap-4">
+        <span class="text-text-muted w-20 flex-shrink-0">Location</span>
+        <span class="text-text-secondary text-right">Mumbai, India (IST)</span>
+      </div>
+
+      <!-- Core Focus -->
+      <div class="flex items-baseline justify-between gap-4">
+        <span class="text-text-muted w-20 flex-shrink-0">Focus</span>
+        <span class="text-text-secondary text-right font-sans">Backend Systems · Distributed Architectures</span>
+      </div>
+    </div>
+
+    <!-- Clean Bottom Action Bar -->
+    <div class="pt-5 border-t border-border-subtle flex items-center justify-between font-mono text-[11px]">
+      <!-- Social Links -->
+      <div class="flex items-center gap-4 text-text-secondary">
+        <a 
+          href="https://github.com/sohamsangole" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="hover:text-text-primary transition-colors"
+        >
+          GitHub ↗
+        </a>
+        <a 
+          href="https://linkedin.com/in/sohamsangole" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="hover:text-text-primary transition-colors"
+        >
+          LinkedIn ↗
+        </a>
+      </div>
+
+      <!-- Copy Button -->
+      <button 
+        id="copy-all-card-btn"
+        class="flex items-center gap-1.5 px-3 py-1 bg-black/[0.03] dark:bg-white/[0.04] border border-border-subtle hover:border-text-secondary text-text-secondary hover:text-text-primary rounded transition-all duration-150 cursor-pointer"
+        title="Copy complete info card (Shortcut: C)"
+      >
+        <span id="copy-all-text">COPY INFO</span>
+        <kbd class="text-[9px] text-text-muted border border-border-subtle/60 px-1 py-0.2 rounded">C</kbd>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="quick-info-toast" class="fixed bottom-6 right-6 z-50 bg-text-primary text-bg font-mono text-xs px-3.5 py-2 rounded shadow-xl opacity-0 pointer-events-none transition-opacity duration-150">
+  Info copied to clipboard
+</div>
+
+<script is:inline>
+  (function() {
+    function initQuickModal() {
+      var modal = document.getElementById('quick-info-modal');
+      var backdrop = document.getElementById('quick-info-backdrop');
+      var closeBtn = document.getElementById('quick-info-close-btn');
+      var copyAllBtn = document.getElementById('copy-all-card-btn');
+      var copyAllText = document.getElementById('copy-all-text');
+      var toast = document.getElementById('quick-info-toast');
+
+      if (!modal) return;
+
+      var fullCardText = [
+        "Soham Sangole · Software Engineer 1",
+        "Bank of America · Mumbai, India (IST)",
+        "",
+        "Email: sasangole2019@gmail.com",
+        "GitHub: https://github.com/sohamsangole",
+        "LinkedIn: https://linkedin.com/in/sohamsangole",
+        "",
+        "Focus: Backend Systems · Distributed Architectures"
+      ].join("\n");
+
+      function showToast(msg) {
+        if (!toast) return;
+        toast.textContent = msg;
+        toast.style.opacity = '1';
+        toast.style.pointerEvents = 'auto';
+        setTimeout(function() {
+          toast.style.opacity = '0';
+          toast.style.pointerEvents = 'none';
+        }, 2200);
+      }
+
+      function openModal() {
+        modal.style.display = 'flex';
+        modal.style.opacity = '1';
+        modal.style.pointerEvents = 'auto';
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeModal() {
+        modal.style.display = 'none';
+        modal.style.opacity = '0';
+        modal.style.pointerEvents = 'none';
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      function copyAll() {
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(fullCardText);
+          showToast('Copied to clipboard');
+          if (copyAllText) {
+            copyAllText.textContent = 'COPIED!';
+            setTimeout(function() {
+              copyAllText.textContent = 'COPY INFO';
+            }, 1800);
+          }
+        }
+      }
+
+      // Universal key listener (Ctrl+K, Cmd+K, Alt+K, Ctrl+I, or '?' key)
+      window.addEventListener('keydown', function(e) {
+        var isK = (e.key === 'k' || e.key === 'K' || e.code === 'KeyK' || e.keyCode === 75);
+        var isI = (e.key === 'i' || e.key === 'I' || e.code === 'KeyI' || e.keyCode === 73);
+        var isC = (e.key === 'c' || e.key === 'C' || e.code === 'KeyC');
+        var hasModifier = e.metaKey || e.ctrlKey || e.altKey;
+
+        if ((hasModifier && isK) || (hasModifier && isI)) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (modal.style.display === 'flex') {
+            closeModal();
+          } else {
+            openModal();
+          }
+          return false;
+        }
+
+        // Inside open modal: press C to copy all
+        if (modal.style.display === 'flex' && isC && !hasModifier) {
+          e.preventDefault();
+          copyAll();
+          return;
+        }
+
+        // Single key shortcuts when not typing in an input
+        var activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+        if (activeTag !== 'input' && activeTag !== 'textarea') {
+          if (e.key === '?' || (e.key === 'i' && !hasModifier)) {
+            if (modal.style.display !== 'flex') {
+              e.preventDefault();
+              openModal();
+            }
+          }
+        }
+
+        if (e.key === 'Escape' && modal.style.display === 'flex') {
+          closeModal();
+        }
+      }, true);
+
+      if (closeBtn) closeBtn.onclick = closeModal;
+      if (backdrop) backdrop.onclick = closeModal;
+      if (copyAllBtn) copyAllBtn.onclick = copyAll;
+
+      // Footer button clicks
+      document.addEventListener('click', function(e) {
+        var el = e.target;
+        if (el && el.closest && el.closest('.command-palette-trigger')) {
+          e.preventDefault();
+          openModal();
+        }
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initQuickModal);
+    } else {
+      initQuickModal();
+    }
+  })();
+</script>

@@ -1,0 +1,209 @@
+---
+import { PORTFOLIO_DATA } from '../data/portfolioData';
+
+// Generate mock contribution grid data (52 weeks x 7 days)
+const WEEKS = 52;
+const DAYS = 7;
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const DAY_LABELS = ['', 'Mon', '', 'Wed', '', 'Fri', ''];
+
+// Seeded pseudo-random activity levels (0 to 4) for realistic UI mockup
+const generateMockGrid = () => {
+  const grid = [];
+  for (let w = 0; w < WEEKS; w++) {
+    const week = [];
+    // Realistic clustering: active periods in weeks 8-18, 24-36, 42-51
+    const inActiveCluster = (w >= 8 && w <= 18) || (w >= 24 && w <= 36) || (w >= 42 && w <= 51);
+
+    for (let d = 0; d < DAYS; d++) {
+      const seed = Math.sin(w * 7.13 + d * 19.87) * 10000;
+      const rand = seed - Math.floor(seed);
+      let level = 0;
+
+      if (inActiveCluster) {
+        if (rand > 0.58) level = 1;
+        if (rand > 0.78) level = 2;
+        if (rand > 0.91) level = 3;
+        if (rand > 0.97) level = 4;
+      } else {
+        if (rand > 0.82) level = 1;
+        if (rand > 0.94) level = 2;
+        if (rand > 0.98) level = 3;
+      }
+      
+      const count = level === 0 ? 0 : level * 2 + Math.floor(rand * 3) + 1;
+      week.push({ level, count, weekIndex: w, dayIndex: d });
+    }
+    grid.push(week);
+  }
+  return grid;
+};
+
+const contributionGrid = generateMockGrid();
+---
+
+<!-- GitHub Contribution Activity Dialog -->
+<div 
+  id="github-modal" 
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-100"
+  role="dialog"
+  aria-modal="true"
+  aria-hidden="true"
+>
+  <!-- Backdrop -->
+  <div 
+    id="github-modal-backdrop"
+    class="absolute inset-0 bg-black/40 cursor-pointer"
+  ></div>
+
+  <!-- Modal Container -->
+  <div 
+    id="github-modal-container"
+    class="relative w-full max-w-3xl bg-modal-bg border border-border-subtle shadow-2xl p-6 sm:p-8 rounded-none overflow-y-auto max-h-[90vh]"
+  >
+    <!-- Close button -->
+    <button 
+      id="github-modal-close-btn"
+      class="absolute top-4 right-4 text-text-secondary hover:text-text-primary p-2 font-mono text-xs tracking-wider flex items-center gap-1.5 focus:outline-none transition-colors"
+      aria-label="Close activity modal"
+    >
+      <span class="text-[11px] uppercase font-mono text-text-muted">ESC</span>
+      <span class="text-base leading-none">✕</span>
+    </button>
+
+    <!-- Modal Header -->
+    <div class="flex flex-col space-y-1.5 border-b border-border-subtle pb-4 pr-12">
+      <div class="font-mono text-xs text-text-secondary tracking-widest uppercase flex items-center gap-2">
+        <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+        <span>GITHUB CONTRIBUTIONS</span>
+      </div>
+      <div class="flex items-baseline justify-between flex-wrap gap-2 pt-1">
+        <h2 class="text-xl sm:text-2xl font-medium tracking-tight text-text-primary">
+          sohamsangole
+        </h2>
+        <a 
+          href="https://github.com/sohamsangole" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="font-mono text-xs text-text-secondary hover:text-text-primary flex items-center gap-1 hover:underline"
+        >
+          <span>github.com/sohamsangole</span>
+          <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="7" y1="17" x2="17" y2="7"></line>
+            <polyline points="7 7 17 7 17 17"></polyline>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Quick Stats Row -->
+    <div class="grid grid-cols-3 gap-3 py-4 border-b border-border-subtle/60 text-xs sm:text-sm font-mono">
+      <div class="flex flex-col">
+        <span class="text-[10px] uppercase text-text-muted tracking-wider">2026 Activity</span>
+        <span class="text-base sm:text-lg font-medium text-text-primary mt-0.5">842 commits</span>
+      </div>
+      <div class="flex flex-col">
+        <span class="text-[10px] uppercase text-text-muted tracking-wider">Current Streak</span>
+        <span class="text-base sm:text-lg font-medium text-text-primary mt-0.5">18 days</span>
+      </div>
+      <div class="flex flex-col">
+        <span class="text-[10px] uppercase text-text-muted tracking-wider">Longest Streak</span>
+        <span class="text-base sm:text-lg font-medium text-text-primary mt-0.5">46 days</span>
+      </div>
+    </div>
+
+    <!-- Contribution Chart Area -->
+    <div class="py-5 overflow-x-auto">
+      <div class="min-w-[640px]">
+        <!-- Month Labels -->
+        <div class="flex justify-between pl-8 pr-2 pb-1.5 text-[10px] font-mono text-text-muted select-none">
+          {MONTHS.map(m => <span>{m}</span>)}
+        </div>
+
+        <!-- Days & Grid Container -->
+        <div class="flex gap-2">
+          <!-- Day Labels (Mon, Wed, Fri) -->
+          <div class="flex flex-col justify-between py-0.5 text-[9px] font-mono text-text-muted w-6 select-none leading-none h-[88px]">
+            <span>Mon</span>
+            <span>Wed</span>
+            <span>Fri</span>
+          </div>
+
+          <!-- Heatmap Grid -->
+          <div id="github-contributions-grid" class="flex-1 grid grid-flow-col grid-rows-7 gap-[2.5px] p-2 bg-black/[0.02] dark:bg-white/[0.02] border border-border-subtle/50 rounded">
+            {contributionGrid.map((week) => (
+              week.map((cell) => (
+                <div 
+                  class={`w-[10px] h-[10px] rounded-[1.5px] cell-level-${cell.level} transition-opacity duration-100 hover:opacity-80 cursor-pointer`}
+                  title={`${cell.count} contributions`}
+                ></div>
+              ))
+            ))}
+          </div>
+        </div>
+
+        <!-- Legend Footer -->
+        <div class="flex items-center justify-between mt-3 text-[10px] font-mono text-text-muted select-none">
+          <span>Recent repository contributions</span>
+          <div class="flex items-center gap-1.5">
+            <span>Less</span>
+            <span class="w-2.5 h-2.5 cell-level-0 rounded-[1px] inline-block"></span>
+            <span class="w-2.5 h-2.5 cell-level-1 rounded-[1px] inline-block"></span>
+            <span class="w-2.5 h-2.5 cell-level-2 rounded-[1px] inline-block"></span>
+            <span class="w-2.5 h-2.5 cell-level-3 rounded-[1px] inline-block"></span>
+            <span class="w-2.5 h-2.5 cell-level-4 rounded-[1px] inline-block"></span>
+            <span>More</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Projects Mention -->
+    <div class="pt-3 border-t border-border-subtle flex items-center justify-between text-xs text-text-secondary">
+      <span>Latest commits to <strong class="font-mono text-text-primary">stella</strong> &amp; <strong class="font-mono text-text-primary">computemesh</strong></span>
+      <span class="font-mono text-[11px] text-text-muted">Live Sync (UI Mock)</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  function setupGithubModal() {
+    const trigger = document.getElementById('activity-modal-trigger');
+    const modal = document.getElementById('github-modal');
+    const backdrop = document.getElementById('github-modal-backdrop');
+    const closeBtn = document.getElementById('github-modal-close-btn');
+
+    function openModal() {
+      if (!modal) return;
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      modal.classList.add('opacity-100', 'pointer-events-auto');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      if (!modal) return;
+      modal.classList.remove('opacity-100', 'pointer-events-auto');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    trigger?.addEventListener('click', (e) => {
+      e.preventDefault();
+      openModal();
+    });
+
+    closeBtn?.addEventListener('click', closeModal);
+    backdrop?.addEventListener('click', closeModal);
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+  }
+
+  setupGithubModal();
+  document.addEventListener('astro:page-load', setupGithubModal);
+</script>

@@ -1,0 +1,45 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import Projects from '../components/Projects.astro';
+import ExperienceNow from '../components/ExperienceNow.astro';
+import Footer from '../components/Footer.astro';
+import ProjectModal from '../components/ProjectModal.astro';
+import GithubActivityModal from '../components/GithubActivityModal.astro';
+import CommandMenu from '../components/CommandMenu.astro';
+---
+
+<Layout>
+  <!-- Main Desktop 1-Viewport Container (Scrolls naturally on mobile or ultra-small screens) -->
+  <main class="w-full min-h-screen lg:h-screen lg:max-h-screen flex flex-col justify-between px-6 sm:px-10 md:px-14 lg:px-16 py-3 sm:py-4 lg:py-5 max-w-[1140px] mx-auto box-border">
+    <!-- Top Section: Header & Hero -->
+    <div class="flex flex-col w-full">
+      <Header />
+      <Hero />
+    </div>
+
+    <!-- Divider -->
+    <div class="w-full border-b border-border-subtle my-1.5 sm:my-2"></div>
+
+    <!-- Middle Section: Projects (3 rows) -->
+    <div class="w-full my-auto py-0.5">
+      <Projects />
+    </div>
+
+    <!-- Bottom Section: Experience / Now & Footer -->
+    <div class="flex flex-col w-full mt-auto pt-1 space-y-2 sm:space-y-3">
+      <ExperienceNow />
+      <Footer />
+    </div>
+  </main>
+
+  <!-- Clean System Architecture Modal -->
+  <ProjectModal />
+
+  <!-- GitHub Contribution Activity Modal -->
+  <GithubActivityModal />
+
+  <!-- Minimal Command Palette -->
+  <CommandMenu />
+</Layout>

@@ -1,0 +1,41 @@
+---
+import { PORTFOLIO_DATA } from '../data/portfolioData';
+---
+
+<section class="w-full grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-8 py-1 sm:py-1.5 text-xs sm:text-[13px]">
+  <!-- Experience Column -->
+  <div class="flex flex-col">
+    <span class="text-[10px] sm:text-[11px] uppercase font-mono tracking-[0.14em] text-text-secondary font-medium mb-1 select-none">
+      EXPERIENCE
+    </span>
+    <div class="flex flex-col space-y-2">
+      {PORTFOLIO_DATA.experiences.map((exp) => (
+        <div class="flex flex-col space-y-0.5">
+          <div class="flex items-baseline justify-between gap-2">
+            <span class="font-medium text-text-primary text-xs sm:text-[13px]">{exp.company}</span>
+            <span class="text-[11px] font-mono text-text-muted">{exp.period}</span>
+          </div>
+          <div class="flex items-center justify-between text-text-secondary text-xs">
+            <span>{exp.role}</span>
+            {exp.location && <span class="text-[11px] text-text-muted">{exp.location}</span>}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Now Column -->
+  <div class="flex flex-col">
+    <span class="text-[10px] sm:text-[11px] uppercase font-mono tracking-[0.14em] text-text-secondary font-medium mb-1 select-none">
+      {PORTFOLIO_DATA.now.title}
+    </span>
+    <ul class="flex flex-col space-y-0.5 text-text-secondary">
+      {PORTFOLIO_DATA.now.items.map((item) => (
+        <li class="leading-normal flex items-center gap-2">
+          <span class="w-1 h-1 rounded-full bg-border-subtle flex-shrink-0"></span>
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
