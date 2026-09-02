@@ -50,32 +50,8 @@ export const PORTFOLIO_DATA = {
       }
     },
     {
-      id: "computemesh",
-      number: "02",
-      title: "ComputeMesh",
-      shortDescription: "A peer-to-peer compute network that turns idle devices into a distributed compute fabric.",
-      technologies: ["Distributed Systems", "P2P", "Python", "Networking", "AI"],
-      hasModal: true,
-      deepDive: {
-        summary: "A decentralized computing network aggregating heterogeneous worker nodes across NAT boundaries into a unified parallel execution cluster.",
-        highlights: [
-          "Gossip-based peer discovery and dynamic topology mesh self-healing",
-          "Decentralized task scheduler with latency-weighted work distribution",
-          "Heartbeat liveness monitoring and automatic task re-assignment on worker failure",
-          "Cryptographic hash verification and consensus-checked worker computation outputs",
-          "P2P direct socket communication with hole punching over libp2p/custom TCP transport"
-        ],
-        architecture: [
-          "Zero-dependency Python core with asynchronous event loops (`asyncio`)",
-          "Merkle-tree based output validation to detect Byzantine or corrupted compute nodes",
-          "Dynamic shard chunking for large AI inference batch tasks and map-reduce jobs",
-          "Telemetry daemon measuring node CPU, memory bandwidth, and network latency"
-        ]
-      }
-    },
-    {
       id: "stella",
-      number: "03",
+      number: "02",
       title: "Stella",
       shortDescription: "A self-hosted AI software engineer that turns GitHub issues into tested pull requests.",
       technologies: ["Python", "FastAPI", "Celery", "Redis", "GitHub"],
