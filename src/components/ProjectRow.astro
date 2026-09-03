@@ -9,7 +9,7 @@ const { project } = Astro.props;
 ---
 
 <div 
-  class="project-row group relative w-full -mx-3 px-3 py-2 sm:py-2.5 rounded transition-all duration-200 hover:bg-black/[0.03] cursor-pointer border-b border-border-subtle/50 last:border-b-0"
+  class="project-row group relative w-full -mx-3 px-3 py-2 sm:py-2.5 rounded transition-all duration-200 hover:bg-black/[0.035] dark:hover:bg-white/[0.04] cursor-pointer border-b border-border-subtle/50 last:border-b-0"
   data-project-id={project.id}
   tabindex="0"
   role="button"
@@ -18,14 +18,14 @@ const { project } = Astro.props;
   <div class="flex items-baseline justify-between gap-3">
     <div class="flex items-baseline gap-3 sm:gap-4 flex-1 min-w-0">
       <!-- Project Number -->
-      <span class="font-mono text-xs text-text-secondary flex-shrink-0 tracking-wider">
+      <span class="font-mono text-xs text-text-secondary group-hover:text-text-primary flex-shrink-0 tracking-wider transition-colors duration-150">
         {project.number}
       </span>
 
       <!-- Title & Details -->
       <div class="flex-1 min-w-0">
         <div class="flex items-baseline justify-between gap-2">
-          <h3 class="text-sm sm:text-[15px] font-medium text-text-primary group-hover:text-black transition-colors duration-150 truncate">
+          <h3 class="text-sm sm:text-[15px] font-medium text-text-primary group-hover:text-black dark:group-hover:text-white transition-colors duration-150 truncate">
             {project.title}
           </h3>
         </div>
@@ -42,20 +42,8 @@ const { project } = Astro.props;
       </div>
     </div>
 
-    <!-- Arrow & Actions -->
-    <div class="flex items-center gap-2.5 flex-shrink-0 ml-2">
-      {project.externalUrl && (
-        <a 
-          href={project.externalUrl} 
-          target="_blank" 
-          rel="noopener noreferrer"
-          class="external-link-btn hidden sm:inline-flex text-[10px] font-mono tracking-wider text-text-secondary hover:text-text-primary px-1.5 py-0.5 border border-border-subtle rounded hover:border-text-secondary transition-colors duration-150"
-          title="Open repository in new tab"
-          onclick="event.stopPropagation();"
-        >
-          GITHUB
-        </a>
-      )}
+    <!-- Arrow Indicator -->
+    <div class="flex items-center flex-shrink-0 ml-2">
       <svg class="w-3.5 h-3.5 text-text-secondary group-hover:text-text-primary transition-all duration-200 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 select-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <line x1="7" y1="17" x2="17" y2="7"></line>
         <polyline points="7 7 17 7 17 17"></polyline>
