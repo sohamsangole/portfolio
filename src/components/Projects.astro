@@ -3,7 +3,7 @@ import { PORTFOLIO_DATA } from '../data/portfolioData';
 import ProjectRow from './ProjectRow.astro';
 ---
 
-<section class="w-full flex flex-col justify-center py-0.5 sm:py-1">
+<section class="w-full flex flex-col justify-center py-0.5 sm:py-1 relative">
   <div class="text-[10px] sm:text-[11px] uppercase font-mono tracking-[0.14em] text-text-secondary font-medium mb-1 select-none">
     PROJECTS
   </div>
@@ -13,4 +13,159 @@ import ProjectRow from './ProjectRow.astro';
       <ProjectRow project={project} />
     ))}
   </div>
+
+  <!-- Pure Architecture Diagram Card on Hover (Only for Stella, Zero Text, Fast, No Blur) -->
+  <div 
+    id="project-quicklook" 
+    class="fixed z-30 pointer-events-none opacity-0 translate-y-1 transition-all duration-150 ease-out hidden md:block"
+  >
+    <div class="w-[490px] sm:w-[530px] lg:w-[560px] bg-modal-bg dark:bg-[#161615] border border-border-subtle dark:border-white/15 shadow-2xl p-4 sm:p-5 rounded-none text-xs">
+      <!-- Title Bar -->
+      <div class="pb-2 mb-2.5 border-b border-border-subtle/50 text-[10.5px] font-mono tracking-widest uppercase">
+        <span class="font-semibold text-text-primary tracking-wider">
+          STELLA STATE MACHINE ARCHITECTURE
+        </span>
+      </div>
+
+      <!-- Stella State Machine Diagram -->
+      <div id="diagram-stella" class="my-0.5">
+        <svg viewBox="0 0 524 94" class="w-full h-auto select-none overflow-visible" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arr-gray-stella" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="5" markerHeight="5" orient="auto">
+              <path d="M 0 1 L 5 3 L 0 5 z" class="fill-text-secondary dark:fill-text-muted" />
+            </marker>
+            <marker id="arr-amber-stella" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="5" markerHeight="5" orient="auto">
+              <path d="M 0 1 L 5 3 L 0 5 z" fill="#D97706" />
+            </marker>
+            <marker id="arr-red-stella" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="5" markerHeight="5" orient="auto">
+              <path d="M 0 1 L 5 3 L 0 5 z" fill="#DC2626" />
+            </marker>
+          </defs>
+
+          <!-- Node 0: GITHUB ISSUE -->
+          <rect x="8" y="8" width="86" height="28" rx="4" class="fill-bg dark:fill-[#1e1e1d] stroke-border-subtle dark:stroke-white/20" stroke-width="1.2"/>
+          <text x="51" y="26" text-anchor="middle" class="font-mono text-[9px] font-medium fill-text-primary tracking-wider">GITHUB ISSUE</text>
+
+          <!-- Arrow 0: GITHUB ISSUE -> PLAN -->
+          <line x1="94" y1="22" x2="114" y2="22" class="stroke-text-secondary dark:stroke-text-muted" stroke-width="1.3" marker-end="url(#arr-gray-stella)"/>
+
+          <!-- Node 1: PLAN -->
+          <rect x="114" y="8" width="58" height="28" rx="4" class="fill-bg dark:fill-[#1e1e1d] stroke-border-subtle dark:stroke-white/20" stroke-width="1.2"/>
+          <text x="143" y="26" text-anchor="middle" class="font-mono text-[10.5px] font-medium fill-text-primary tracking-wider">PLAN</text>
+
+          <!-- Arrow 1: PLAN -> CODE -->
+          <line x1="172" y1="22" x2="192" y2="22" class="stroke-text-secondary dark:stroke-text-muted" stroke-width="1.3" marker-end="url(#arr-gray-stella)"/>
+
+          <!-- Node 2: CODE -->
+          <rect x="192" y="8" width="58" height="28" rx="4" class="fill-bg dark:fill-[#1e1e1d] stroke-border-subtle dark:stroke-white/20" stroke-width="1.2"/>
+          <text x="221" y="26" text-anchor="middle" class="font-mono text-[10.5px] font-medium fill-text-primary tracking-wider">CODE</text>
+
+          <!-- Arrow 2: CODE -> REVIEW -->
+          <line x1="250" y1="22" x2="270" y2="22" class="stroke-text-secondary dark:stroke-text-muted" stroke-width="1.3" marker-end="url(#arr-gray-stella)"/>
+
+          <!-- Node 3: REVIEW -->
+          <rect x="270" y="8" width="68" height="28" rx="4" class="fill-bg dark:fill-[#1e1e1d] stroke-border-subtle dark:stroke-white/20" stroke-width="1.2"/>
+          <text x="304" y="26" text-anchor="middle" class="font-mono text-[10.5px] font-medium fill-text-primary tracking-wider">REVIEW</text>
+
+          <!-- Arrow 3: REVIEW -> TEST -->
+          <line x1="338" y1="22" x2="358" y2="22" class="stroke-text-secondary dark:stroke-text-muted" stroke-width="1.3" marker-end="url(#arr-gray-stella)"/>
+
+          <!-- Node 4: TEST -->
+          <rect x="358" y="8" width="58" height="28" rx="4" class="fill-bg dark:fill-[#1e1e1d] stroke-border-subtle dark:stroke-white/20" stroke-width="1.2"/>
+          <text x="387" y="26" text-anchor="middle" class="font-mono text-[10.5px] font-medium fill-text-primary tracking-wider">TEST</text>
+
+          <!-- Arrow 4: TEST -> PR -->
+          <line x1="416" y1="22" x2="436" y2="22" class="stroke-text-secondary dark:stroke-text-muted" stroke-width="1.3" marker-end="url(#arr-gray-stella)"/>
+
+          <!-- Node 5: PR (Success) -->
+          <rect x="436" y="8" width="80" height="28" rx="4" class="fill-emerald-500/10 dark:fill-emerald-500/20 stroke-emerald-600 dark:stroke-emerald-400" stroke-width="1.4"/>
+          <text x="476" y="26" text-anchor="middle" class="font-mono text-[10.5px] font-semibold fill-emerald-600 dark:fill-emerald-400 tracking-wider">PULL REQ ↗</text>
+
+          <!-- Loopback 1: REVIEW Rejected -> PLAN -->
+          <path d="M 304 36 v 22 H 154 v -16" fill="none" class="stroke-amber-600 dark:stroke-amber-400" stroke-width="1.1" stroke-dasharray="2.5 2.5" marker-end="url(#arr-amber-stella)"/>
+          <rect x="189" y="51" width="80" height="14" rx="3" class="fill-bg dark:fill-[#161615] stroke-amber-500/40" stroke-width="0.8"/>
+          <text x="229" y="61.5" text-anchor="middle" class="font-mono text-[7.5px] font-medium fill-amber-600 dark:fill-amber-400 uppercase tracking-tight">review rejected</text>
+
+          <!-- Loopback 2: TEST Failed -> PLAN -->
+          <path d="M 387 36 v 40 H 132 v -34" fill="none" class="stroke-red-500 dark:stroke-red-400" stroke-width="1.1" stroke-dasharray="2.5 2.5" marker-end="url(#arr-red-stella)"/>
+          <rect x="225" y="71" width="70" height="14" rx="3" class="fill-bg dark:fill-[#161615] stroke-red-500/40" stroke-width="0.8"/>
+          <text x="260" y="81.5" text-anchor="middle" class="font-mono text-[7.5px] font-medium fill-red-500 dark:fill-red-400 uppercase tracking-tight">test failed</text>
+        </svg>
+      </div>
+    </div>
+  </div>
 </section>
+
+<script>
+  function setupProjectQuicklook() {
+    const quicklook = document.getElementById('project-quicklook');
+    if (!quicklook) return;
+
+    const projectRows = document.querySelectorAll('.project-row');
+    let hideTimeout: ReturnType<typeof setTimeout> | null = null;
+
+    function showDiagram(row: HTMLElement, projectId: string) {
+      if (hideTimeout) {
+        clearTimeout(hideTimeout);
+        hideTimeout = null;
+      }
+
+      // First project is in development -> keep hover blank
+      if (projectId !== 'stella') {
+        quicklook?.classList.remove('opacity-100', 'translate-y-0');
+        quicklook?.classList.add('opacity-0', 'translate-y-1');
+        return;
+      }
+
+      // Position card cleanly in available horizontal space
+      const rect = row.getBoundingClientRect();
+      const cardWidth = window.innerWidth >= 1280 ? 570 : (window.innerWidth >= 1024 ? 540 : 510);
+      
+      let left = Math.min(rect.left + rect.width * 0.40, window.innerWidth - cardWidth - 24);
+      if (left < 20) left = 20;
+
+      let top = rect.top - 20;
+      const estimatedHeight = 160;
+      if (top + estimatedHeight > window.innerHeight - 15) {
+        top = window.innerHeight - estimatedHeight - 15;
+      }
+      if (top < 15) top = 15;
+
+      quicklook.style.left = `${left}px`;
+      quicklook.style.top = `${top}px`;
+
+      quicklook.classList.remove('opacity-0', 'translate-y-1');
+      quicklook.classList.add('opacity-100', 'translate-y-0');
+    }
+
+    function hideDiagram() {
+      if (hideTimeout) clearTimeout(hideTimeout);
+      hideTimeout = setTimeout(() => {
+        quicklook.classList.remove('opacity-100', 'translate-y-0');
+        quicklook.classList.add('opacity-0', 'translate-y-1');
+      }, 70);
+    }
+
+    projectRows.forEach(row => {
+      const projectId = row.getAttribute('data-project-id');
+      if (!projectId) return;
+
+      row.addEventListener('mouseenter', () => {
+        showDiagram(row as HTMLElement, projectId);
+      });
+
+      row.addEventListener('mouseleave', () => {
+        hideDiagram();
+      });
+
+      // When clicked, hide hover card immediately so modal takes over cleanly
+      row.addEventListener('click', () => {
+        quicklook.classList.remove('opacity-100', 'translate-y-0');
+        quicklook.classList.add('opacity-0', 'translate-y-1');
+      });
+    });
+  }
+
+  setupProjectQuicklook();
+  document.addEventListener('astro:page-load', setupProjectQuicklook);
+</script>
