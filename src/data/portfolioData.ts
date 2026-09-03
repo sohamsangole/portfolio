@@ -8,6 +8,7 @@ export interface Project {
   hasModal?: boolean;
   deepDive: {
     summary: string;
+    flow?: string;
     highlights: string[];
     architecture: string[];
   };
@@ -59,18 +60,19 @@ export const PORTFOLIO_DATA = {
       hasModal: true,
       deepDive: {
         summary: "An autonomous agentic developer that hooks into GitHub webhooks, parses problem context, iterates on code changes in an isolated workspace, runs tests, and opens clean pull requests.",
+        flow: "[PLAN] → [CODE] → [REVIEW] → [TEST] → [PR]",
         highlights: [
+          "Event-driven state machine loop: PLAN → CODE → REVIEW → TEST → COMPLETED",
+          "Automated feedback loops (review rejected or test failed routes back to PLAN with error tracebacks)",
           "Listens to GitHub issue events and repository webhooks with HMAC signature verification",
           "Orchestrates asynchronous agent tasks via Celery worker queues and Redis broker",
-          "Context-aware codebase indexing and AST retrieval for precise prompt construction",
-          "Automated patch generation, lint checking, and unit test execution inside isolated sandboxes",
-          "Generates comprehensive PR descriptions with rationale, diff summaries, and test evidence"
+          "Automated patch generation, lint checking, and unit test execution inside isolated Git sandboxes"
         ],
         architecture: [
           "FastAPI gateway serving webhook endpoints and monitoring dashboards",
           "Celery distributed task workers handling long-running LLM inference & build pipelines",
-          "Git CLI integration with branch isolation and automated signed commit creation",
-          "Direct integration with GitHub REST & GraphQL APIs"
+          "Isolated Git workspace sandbox with automated patch generation & AST retrieval",
+          "Direct integration with GitHub REST & GraphQL APIs for comments and signed PRs"
         ]
       }
     }
