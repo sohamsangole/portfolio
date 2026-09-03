@@ -5,7 +5,7 @@ import { PORTFOLIO_DATA } from '../data/portfolioData';
 <!-- Project Detail Dialog -->
 <div 
   id="project-modal" 
-  class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-100"
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-150"
   role="dialog"
   aria-modal="true"
   aria-hidden="true"
@@ -13,18 +13,18 @@ import { PORTFOLIO_DATA } from '../data/portfolioData';
   <!-- Backdrop (pure opacity, zero blur overhead for 60-120fps performance) -->
   <div 
     id="modal-backdrop"
-    class="absolute inset-0 bg-black/40 cursor-pointer"
+    class="absolute inset-0 bg-black/60 cursor-pointer"
   ></div>
 
   <!-- Modal Container -->
   <div 
     id="modal-container"
-    class="relative w-full max-w-2xl bg-modal-bg border border-border-subtle shadow-2xl p-6 sm:p-8 rounded-none overflow-y-auto max-h-[85vh] transition-transform duration-100"
+    class="relative w-full max-w-2xl bg-modal-bg border border-border-subtle shadow-2xl p-6 sm:p-8 rounded-none overflow-y-auto max-h-[85vh] transition-transform duration-150"
   >
     <!-- Close button -->
     <button 
       id="modal-close-btn"
-      class="absolute top-4 right-4 text-text-secondary hover:text-text-primary p-2 font-mono text-xs tracking-wider flex items-center gap-1.5 focus:outline-none transition-colors"
+      class="absolute top-4 right-4 text-text-secondary hover:text-text-primary p-2 font-mono text-xs tracking-wider flex items-center gap-1.5 focus:outline-none transition-colors cursor-pointer"
       aria-label="Close modal"
     >
       <span class="text-[11px] uppercase font-mono text-text-muted">ESC</span>
@@ -51,6 +51,74 @@ import { PORTFOLIO_DATA } from '../data/portfolioData';
               ))}
             </div>
           </div>
+
+          <!-- Stella Architecture Diagram (Top of Overview, No Box, Just Diagram) -->
+          {proj.id === 'stella' && (
+            <div class="py-1">
+              <svg viewBox="0 0 524 94" class="w-full h-auto select-none overflow-visible" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <marker id="modal-arr-gray-stella" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="5" markerHeight="5" orient="auto">
+                    <path d="M 0 1 L 5 3 L 0 5 z" class="fill-text-secondary dark:fill-text-muted" />
+                  </marker>
+                  <marker id="modal-arr-amber-stella" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="5" markerHeight="5" orient="auto">
+                    <path d="M 0 1 L 5 3 L 0 5 z" fill="#D97706" />
+                  </marker>
+                  <marker id="modal-arr-red-stella" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="5" markerHeight="5" orient="auto">
+                    <path d="M 0 1 L 5 3 L 0 5 z" fill="#DC2626" />
+                  </marker>
+                </defs>
+
+                <!-- Node 0: GITHUB ISSUE -->
+                <rect x="8" y="8" width="86" height="28" rx="4" class="fill-bg dark:fill-[#1e1e1d] stroke-border-subtle dark:stroke-white/20" stroke-width="1.2"/>
+                <text x="51" y="26" text-anchor="middle" class="font-mono text-[9px] font-medium fill-text-primary tracking-wider">GITHUB ISSUE</text>
+
+                <!-- Arrow 0: GITHUB ISSUE -> PLAN -->
+                <line x1="94" y1="22" x2="114" y2="22" class="stroke-text-secondary dark:stroke-text-muted" stroke-width="1.3" marker-end="url(#modal-arr-gray-stella)"/>
+
+                <!-- Node 1: PLAN -->
+                <rect x="114" y="8" width="58" height="28" rx="4" class="fill-bg dark:fill-[#1e1e1d] stroke-border-subtle dark:stroke-white/20" stroke-width="1.2"/>
+                <text x="143" y="26" text-anchor="middle" class="font-mono text-[10.5px] font-medium fill-text-primary tracking-wider">PLAN</text>
+
+                <!-- Arrow 1: PLAN -> CODE -->
+                <line x1="172" y1="22" x2="192" y2="22" class="stroke-text-secondary dark:stroke-text-muted" stroke-width="1.3" marker-end="url(#modal-arr-gray-stella)"/>
+
+                <!-- Node 2: CODE -->
+                <rect x="192" y="8" width="58" height="28" rx="4" class="fill-bg dark:fill-[#1e1e1d] stroke-border-subtle dark:stroke-white/20" stroke-width="1.2"/>
+                <text x="221" y="26" text-anchor="middle" class="font-mono text-[10.5px] font-medium fill-text-primary tracking-wider">CODE</text>
+
+                <!-- Arrow 2: CODE -> REVIEW -->
+                <line x1="250" y1="22" x2="270" y2="22" class="stroke-text-secondary dark:stroke-text-muted" stroke-width="1.3" marker-end="url(#modal-arr-gray-stella)"/>
+
+                <!-- Node 3: REVIEW -->
+                <rect x="270" y="8" width="68" height="28" rx="4" class="fill-bg dark:fill-[#1e1e1d] stroke-border-subtle dark:stroke-white/20" stroke-width="1.2"/>
+                <text x="304" y="26" text-anchor="middle" class="font-mono text-[10.5px] font-medium fill-text-primary tracking-wider">REVIEW</text>
+
+                <!-- Arrow 3: REVIEW -> TEST -->
+                <line x1="338" y1="22" x2="358" y2="22" class="stroke-text-secondary dark:stroke-text-muted" stroke-width="1.3" marker-end="url(#modal-arr-gray-stella)"/>
+
+                <!-- Node 4: TEST -->
+                <rect x="358" y="8" width="58" height="28" rx="4" class="fill-bg dark:fill-[#1e1e1d] stroke-border-subtle dark:stroke-white/20" stroke-width="1.2"/>
+                <text x="387" y="26" text-anchor="middle" class="font-mono text-[10.5px] font-medium fill-text-primary tracking-wider">TEST</text>
+
+                <!-- Arrow 4: TEST -> PR -->
+                <line x1="416" y1="22" x2="436" y2="22" class="stroke-text-secondary dark:stroke-text-muted" stroke-width="1.3" marker-end="url(#modal-arr-gray-stella)"/>
+
+                <!-- Node 5: PR (Success) -->
+                <rect x="436" y="8" width="80" height="28" rx="4" class="fill-emerald-500/10 dark:fill-emerald-500/20 stroke-emerald-600 dark:stroke-emerald-400" stroke-width="1.4"/>
+                <text x="476" y="26" text-anchor="middle" class="font-mono text-[10.5px] font-semibold fill-emerald-600 dark:fill-emerald-400 tracking-wider">PULL REQ ↗</text>
+
+                <!-- Loopback 1: REVIEW Rejected -> PLAN -->
+                <path d="M 304 36 v 22 H 154 v -16" fill="none" class="stroke-amber-600 dark:stroke-amber-400" stroke-width="1.1" stroke-dasharray="2.5 2.5" marker-end="url(#modal-arr-amber-stella)"/>
+                <rect x="189" y="51" width="80" height="14" rx="3" class="fill-bg dark:fill-[#161615] stroke-amber-500/40" stroke-width="0.8"/>
+                <text x="229" y="61.5" text-anchor="middle" class="font-mono text-[7.5px] font-medium fill-amber-600 dark:fill-amber-400 uppercase tracking-tight">review rejected</text>
+
+                <!-- Loopback 2: TEST Failed -> PLAN -->
+                <path d="M 387 36 v 40 H 132 v -34" fill="none" class="stroke-red-500 dark:stroke-red-400" stroke-width="1.1" stroke-dasharray="2.5 2.5" marker-end="url(#modal-arr-red-stella)"/>
+                <rect x="225" y="71" width="70" height="14" rx="3" class="fill-bg dark:fill-[#161615] stroke-red-500/40" stroke-width="0.8"/>
+                <text x="260" y="81.5" text-anchor="middle" class="font-mono text-[7.5px] font-medium fill-red-500 dark:fill-red-400 uppercase tracking-tight">test failed</text>
+              </svg>
+            </div>
+          )}
 
           <!-- Summary -->
           <div class="space-y-2">
@@ -84,7 +152,7 @@ import { PORTFOLIO_DATA } from '../data/portfolioData';
             </h4>
             <ul class="space-y-1.5 text-xs sm:text-sm text-text-secondary font-mono text-[12px]">
               {proj.deepDive.architecture.map((item) => (
-                <li class="flex items-start gap-2 bg-black/[0.02] p-2 border border-border-subtle/50">
+                <li class="flex items-start gap-2 bg-black/[0.02] dark:bg-white/[0.02] p-2 border border-border-subtle/50">
                   <span class="text-text-muted select-none">›</span>
                   <span class="leading-relaxed">{item}</span>
                 </li>
@@ -100,7 +168,7 @@ import { PORTFOLIO_DATA } from '../data/portfolioData';
                 href={proj.externalUrl} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                class="inline-flex items-center gap-1.5 font-mono text-xs text-text-primary hover:text-black border border-text-primary px-3 py-1.5 hover:bg-black hover:text-white transition-all duration-150"
+                class="inline-flex items-center gap-1.5 font-mono text-xs text-text-primary hover:text-black dark:hover:text-white border border-text-primary px-3 py-1.5 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-150"
               >
                 <span>View on GitHub</span>
                 <span>↗</span>
@@ -116,7 +184,6 @@ import { PORTFOLIO_DATA } from '../data/portfolioData';
 <script>
   function setupProjectModal() {
     const modal = document.getElementById('project-modal');
-    const modalContainer = document.getElementById('modal-container');
     const backdrop = document.getElementById('modal-backdrop');
     const closeBtn = document.getElementById('modal-close-btn');
     const projectRows = document.querySelectorAll('.project-row');
@@ -124,17 +191,14 @@ import { PORTFOLIO_DATA } from '../data/portfolioData';
 
     function openModal(projectId: string) {
       if (!modal) return;
-      
-      // Hide all detail views first
+
       detailViews.forEach(view => view.classList.add('hidden'));
 
-      // Show selected project view
       const targetView = document.getElementById(`modal-detail-${projectId}`);
       if (targetView) {
         targetView.classList.remove('hidden');
       }
 
-      // Show modal instantaneously
       modal.classList.remove('opacity-0', 'pointer-events-none');
       modal.classList.add('opacity-100', 'pointer-events-auto');
       modal.setAttribute('aria-hidden', 'false');
@@ -149,17 +213,13 @@ import { PORTFOLIO_DATA } from '../data/portfolioData';
       document.body.style.overflow = '';
     }
 
-    // Attach click listeners to rows
     projectRows.forEach(row => {
       row.addEventListener('click', (e) => {
-        // If clicked on external link directly, don't trigger modal
         const target = e.target as HTMLElement;
         if (target.closest('.external-link-btn')) return;
 
         const projectId = row.getAttribute('data-project-id');
-        if (projectId) {
-          openModal(projectId);
-        }
+        if (projectId) openModal(projectId);
       });
 
       row.addEventListener('keydown', (e: Event) => {
@@ -172,18 +232,14 @@ import { PORTFOLIO_DATA } from '../data/portfolioData';
       });
     });
 
-    // Close handlers
     closeBtn?.addEventListener('click', closeModal);
     backdrop?.addEventListener('click', closeModal);
 
     window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeModal();
-      }
+      if (e.key === 'Escape') closeModal();
     });
   }
 
-  // Initialize on page load and on Astro page swaps if view transitions used
   setupProjectModal();
   document.addEventListener('astro:page-load', setupProjectModal);
 </script>
