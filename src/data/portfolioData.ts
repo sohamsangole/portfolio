@@ -10,7 +10,7 @@ export interface Project {
     summary: string;
     flow?: string;
     highlights: string[];
-    architecture: string[];
+    architecture?: string[];
   };
 }
 
@@ -32,6 +32,7 @@ export const PORTFOLIO_DATA = {
       title: "Payment Processing & Fraud Detection Platform",
       shortDescription: "A simulated payment platform focused on reliable, auditable, and resilient payment workflows.",
       technologies: ["Kotlin", "Spring Boot", "PostgreSQL", "Redis", "Kafka"],
+      externalUrl: "https://github.com/sohamsangole/payment-processing-engine",
       hasModal: true,
       deepDive: {
         summary: "A robust financial transaction core designed to process high-throughput payments with zero data loss, real-time risk evaluation, and exact-once settlement guarantees.",
@@ -41,12 +42,6 @@ export const PORTFOLIO_DATA = {
           "Automated exponential backoff retries and dead-letter queue (DLQ) processing",
           "Rule-based and heuristic fraud scoring pipeline before payment gateway dispatch",
           "Daily settlement reconciliation engine matching ledger entries against gateway logs"
-        ],
-        architecture: [
-          "Event-Driven Architecture powered by Apache Kafka for asynchronous order & ledger updates",
-          "PostgreSQL with strict ACID transactional boundaries and write-ahead auditing",
-          "Spring Boot 3 + Kotlin coroutines for high-concurrency non-blocking I/O",
-          "Redis caching for sub-millisecond fraud velocity checks and tokenized card hashes"
         ]
       }
     },
@@ -67,12 +62,6 @@ export const PORTFOLIO_DATA = {
           "Listens to GitHub issue events and repository webhooks with HMAC signature verification",
           "Orchestrates asynchronous agent tasks via Celery worker queues and Redis broker",
           "Automated patch generation, lint checking, and unit test execution inside isolated Git sandboxes"
-        ],
-        architecture: [
-          "FastAPI gateway serving webhook endpoints and monitoring dashboards",
-          "Celery distributed task workers handling long-running LLM inference & build pipelines",
-          "Isolated Git workspace sandbox with automated patch generation & AST retrieval",
-          "Direct integration with GitHub REST & GraphQL APIs for comments and signed PRs"
         ]
       }
     }
