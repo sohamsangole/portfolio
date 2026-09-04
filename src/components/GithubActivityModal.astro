@@ -1,5 +1,8 @@
 ---
 import { PORTFOLIO_DATA } from '../data/portfolioData';
+import { getRecentCommits } from '../utils/getRecentCommits';
+
+const recentCommits = await getRecentCommits();
 
 // Generate mock contribution grid data (52 weeks x 7 days)
 const WEEKS = 53;
@@ -61,7 +64,7 @@ const contributionGrid = generateMockGrid();
   <!-- Modal Container -->
   <div 
     id="github-modal-container"
-    class="relative w-full max-w-3xl bg-modal-bg border border-border-subtle shadow-2xl p-6 sm:p-8 rounded-none overflow-y-auto max-h-[90vh]"
+    class="relative w-full max-w-3xl bg-modal-bg border border-border-subtle shadow-2xl p-5 sm:px-7 sm:py-5.5 rounded-none max-h-[92vh] sm:max-h-[95vh] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
   >
     <!-- Close button -->
     <button 
@@ -74,15 +77,19 @@ const contributionGrid = generateMockGrid();
     </button>
 
     <!-- Modal Header -->
-    <div class="flex flex-col space-y-1.5 border-b border-border-subtle pb-4 pr-12">
-      <div class="font-mono text-xs text-text-secondary tracking-widest uppercase flex items-center gap-2">
-        <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
-        <span>GITHUB CONTRIBUTIONS</span>
-      </div>
-      <div class="flex items-baseline justify-between flex-wrap gap-2 pt-1">
-        <h2 class="text-xl sm:text-2xl font-medium tracking-tight text-text-primary">
-          sohamsangole
-        </h2>
+    <div class="border-b border-border-subtle pb-2.5 pr-12">
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <div class="flex items-center gap-2.5">
+          <img 
+            src="https://github.com/sohamsangole.png?size=72" 
+            alt="sohamsangole" 
+            class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-border-subtle object-cover bg-surface-subtle"
+            loading="lazy"
+          />
+          <h2 class="text-xl sm:text-2xl font-medium tracking-tight text-text-primary">
+            sohamsangole
+          </h2>
+        </div>
         <a 
           href="https://github.com/sohamsangole" 
           target="_blank" 
@@ -99,7 +106,7 @@ const contributionGrid = generateMockGrid();
     </div>
 
     <!-- Quick Stats Row -->
-    <div class="grid grid-cols-3 gap-3 py-4 border-b border-border-subtle/60 text-xs sm:text-sm font-mono">
+    <div class="grid grid-cols-3 gap-3 py-2.5 border-b border-border-subtle/60 text-xs sm:text-sm font-mono">
       <div class="flex flex-col">
         <span class="text-[10px] uppercase text-text-muted tracking-wider">Activity (1 Year)</span>
         <span id="github-activity-total" class="text-base sm:text-lg font-medium text-text-primary mt-0.5">842 contributions</span>
@@ -115,10 +122,10 @@ const contributionGrid = generateMockGrid();
     </div>
 
     <!-- Contribution Chart Area -->
-    <div class="py-5 overflow-x-auto">
+    <div class="py-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       <div class="min-w-[640px]">
         <!-- Month Labels -->
-        <div id="github-months-header" class="flex justify-between pl-8 pr-2 pb-1.5 text-[10px] font-mono text-text-muted select-none">
+        <div id="github-months-header" class="flex justify-between pl-8 pr-2 pb-1 text-[10px] font-mono text-text-muted select-none">
           {ROLLING_MONTHS.map(m => <span>{m}</span>)}
         </div>
 
@@ -145,7 +152,7 @@ const contributionGrid = generateMockGrid();
         </div>
 
         <!-- Legend Footer -->
-        <div class="flex items-center justify-between mt-3 text-[10px] font-mono text-text-muted select-none">
+        <div class="flex items-center justify-between mt-2 text-[10px] font-mono text-text-muted select-none">
           <span>Recent repository contributions</span>
           <div class="flex items-center gap-1.5">
             <span>Less</span>
@@ -160,9 +167,39 @@ const contributionGrid = generateMockGrid();
       </div>
     </div>
 
-    <!-- Active Projects Mention -->
-    <div class="pt-3 border-t border-border-subtle flex items-center justify-between text-xs text-text-secondary">
-      <span id="github-latest-repos">Latest commits to <strong class="font-mono text-text-primary">portfolio</strong> &amp; <strong class="font-mono text-text-primary">stella</strong></span>
+    <!-- Recent Commits Section -->
+    <div id="github-recent-commits-section" class="pt-2.5 border-t border-border-subtle flex flex-col space-y-2">
+      <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-text-secondary select-none">
+        <span class="font-medium text-text-primary">RECENT COMMITS</span>
+      </div>
+
+      <div id="github-push-events-list" class="flex flex-col space-y-0.5 text-xs font-mono pb-0.5">
+        {recentCommits.map((c) => (
+          <div class="flex items-center justify-between py-1.5 -mx-2 px-2 rounded hover:bg-black/[0.025] dark:hover:bg-white/[0.03] border-b border-border-subtle/30 last:border-0 text-text-secondary hover:text-text-primary transition-colors gap-3">
+            <div class="flex items-baseline gap-2 min-w-0 pr-2">
+              <a 
+                href={`https://github.com/sohamsangole/${c.repo}`} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="font-medium text-text-primary no-underline hover:underline flex-shrink-0"
+              >
+                {c.repo}
+              </a>
+              <span class="text-text-muted text-[10px] select-none flex-shrink-0">/</span>
+              <a 
+                href={c.url} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="text-text-secondary hover:text-text-primary text-[11px] sm:text-xs truncate max-w-[320px] sm:max-w-[440px] no-underline hover:underline" 
+                title={c.message}
+              >
+                {c.message}
+              </a>
+            </div>
+            <span class="text-[11px] text-text-muted flex-shrink-0 font-mono">{c.date}</span>
+          </div>
+        ))}
+      </div>
     </div>
   </div>
 </div>
@@ -170,6 +207,25 @@ const contributionGrid = generateMockGrid();
 <script is:inline>
   (function() {
     var hasFetched = false;
+
+    function formatRelativeDate(isoString) {
+      try {
+        var date = new Date(isoString);
+        var now = new Date();
+        var diffSec = Math.floor((now - date) / 1000);
+        if (diffSec < 60) return 'just now';
+        var diffMin = Math.floor(diffSec / 60);
+        if (diffMin < 60) return diffMin + 'm ago';
+        var diffHours = Math.floor(diffMin / 60);
+        if (diffHours < 24) return diffHours + 'h ago';
+        var diffDays = Math.floor(diffHours / 24);
+        if (diffDays === 1) return 'yesterday';
+        if (diffDays < 7) return diffDays + 'd ago';
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      } catch (e) {
+        return '';
+      }
+    }
 
     function fetchLiveGithubData() {
       if (hasFetched) return;
@@ -179,34 +235,56 @@ const contributionGrid = generateMockGrid();
       var currentStreakEl = document.getElementById('github-current-streak');
       var longestStreakEl = document.getElementById('github-longest-streak');
       var gridEl = document.getElementById('github-contributions-grid');
-      var latestReposEl = document.getElementById('github-latest-repos');
+      var pushListEl = document.getElementById('github-push-events-list');
 
-      // Fetch dynamic active repositories
-      fetch('https://api.github.com/users/sohamsangole/events/public')
-        .then(function(res) {
-          if (!res.ok) throw new Error('API error');
-          return res.json();
-        })
-        .then(function(events) {
-          if (!events || !Array.isArray(events)) return;
-          var repos = [];
-          events.forEach(function(ev) {
-            if (ev.type === 'PushEvent' && ev.repo && ev.repo.name) {
-              var repoName = ev.repo.name.replace(/^sohamsangole\//i, '');
-              if (repos.indexOf(repoName) === -1) {
-                repos.push(repoName);
-              }
-            }
-          });
-          if (repos.length > 0 && latestReposEl) {
-            if (repos.length === 1) {
-              latestReposEl.innerHTML = 'Latest commits to <strong class="font-mono text-text-primary">' + repos[0] + '</strong>';
-            } else {
-              latestReposEl.innerHTML = 'Latest commits to <strong class="font-mono text-text-primary">' + repos[0] + '</strong> &amp; <strong class="font-mono text-text-primary">' + repos[1] + '</strong>';
-            }
-          }
-        })
-        .catch(function() {});
+      // If server build didn't populate recent commits, fetch live dynamically in the browser
+      if (pushListEl && pushListEl.children.length === 0) {
+        fetch('https://api.github.com/users/sohamsangole/repos?sort=pushed&per_page=4')
+          .then(function(res) { return res.json(); })
+          .then(function(repos) {
+            if (!Array.isArray(repos)) return;
+            var promises = repos.slice(0, 3).map(function(r) {
+              return fetch('https://api.github.com/repos/' + r.full_name + '/commits?per_page=3')
+                .then(function(res) { return res.json(); })
+                .then(function(commits) {
+                  if (!Array.isArray(commits)) return [];
+                  return commits.map(function(c) {
+                    return {
+                      repo: r.name,
+                      message: (c.commit && c.commit.message) ? c.commit.message.split('\n')[0] : ('Commit ' + c.sha.substring(0, 7)),
+                      sha: c.sha.substring(0, 7),
+                      url: c.html_url || ('https://github.com/' + r.full_name + '/commit/' + c.sha),
+                      date: formatRelativeDate(c.commit && c.commit.author ? c.commit.author.date : ''),
+                      timestamp: new Date(c.commit && c.commit.author ? c.commit.author.date : 0).getTime()
+                    };
+                  });
+                })
+                .catch(function() { return []; });
+            });
+
+            Promise.all(promises).then(function(results) {
+              var all = results.flat().filter(function(c) { return c.sha; });
+              all.sort(function(a, b) { return b.timestamp - a.timestamp; });
+              var topCommits = all.slice(0, 4);
+              if (topCommits.length === 0) return;
+
+              pushListEl.innerHTML = '';
+              topCommits.forEach(function(c) {
+                var row = document.createElement('div');
+                row.className = 'flex items-center justify-between py-1.5 -mx-2 px-2 rounded hover:bg-black/[0.025] dark:hover:bg-white/[0.03] border-b border-border-subtle/30 last:border-0 text-text-secondary hover:text-text-primary transition-colors gap-3';
+                row.innerHTML = 
+                  '<div class="flex items-baseline gap-2 min-w-0 pr-2">' +
+                    '<a href="https://github.com/sohamsangole/' + c.repo + '" target="_blank" rel="noopener noreferrer" class="font-medium text-text-primary no-underline hover:underline flex-shrink-0">' + c.repo + '</a>' +
+                    '<span class="text-text-muted text-[10px] select-none flex-shrink-0">/</span>' +
+                    '<a href="' + c.url + '" target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-text-primary text-[11px] sm:text-xs truncate max-w-[320px] sm:max-w-[440px] no-underline hover:underline" title="' + c.message.replace(/"/g, '&quot;') + '">' + c.message + '</a>' +
+                  '</div>' +
+                  '<span class="text-[11px] text-text-muted flex-shrink-0 font-mono">' + c.date + '</span>';
+                pushListEl.appendChild(row);
+              });
+            });
+          })
+          .catch(function() {});
+      }
 
       // Fetch contribution activity
       fetch('https://github-contributions-api.jogruber.de/v4/sohamsangole?y=last')
