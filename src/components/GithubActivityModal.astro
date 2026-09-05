@@ -237,57 +237,101 @@ const contributionGrid = generateMockGrid();
       var gridEl = document.getElementById('github-contributions-grid');
       var pushListEl = document.getElementById('github-push-events-list');
 
-      // If server build didn't populate recent commits, fetch live dynamically in the browser
-      if (pushListEl && pushListEl.children.length === 0) {
-        fetch('https://api.github.com/users/sohamsangole/repos?sort=pushed&per_page=4')
-          .then(function(res) { return res.json(); })
-          .then(function(repos) {
-            if (!Array.isArray(repos)) return;
-            var promises = repos.slice(0, 3).map(function(r) {
-              return fetch('https://api.github.com/repos/' + r.full_name + '/commits?per_page=3')
-                .then(function(res) { return res.json(); })
-                .then(function(commits) {
-                  if (!Array.isArray(commits)) return [];
-                  return commits.map(function(c) {
-                    return {
-                      repo: r.name,
-                      message: (c.commit && c.commit.message) ? c.commit.message.split('\n')[0] : ('Commit ' + c.sha.substring(0, 7)),
-                      sha: c.sha.substring(0, 7),
-                      url: c.html_url || ('https://github.com/' + r.full_name + '/commit/' + c.sha),
-                      date: formatRelativeDate(c.commit && c.commit.author ? c.commit.author.date : ''),
-                      timestamp: new Date(c.commit && c.commit.author ? c.commit.author.date : 0).getTime()
-                    };
-                  });
-                })
-                .catch(function() { return []; });
-            });
+      function renderCommits(commits) {
+        if (!pushListEl || !commits || commits.length === 0) return;
+        pushListEl.innerHTML = '';
+        commits.forEach(function(c) {
+          var row = document.createElement('div');
+          row.className = 'flex items-center justify-between py-1.5 -mx-2 px-2 rounded hover:bg-black/[0.025] dark:hover:bg-white/[0.03] border-b border-border-subtle/30 last:border-0 text-text-secondary hover:text-text-primary transition-colors gap-3';
+          row.innerHTML = 
+            '<div class="flex items-baseline gap-2 min-w-0 pr-2">' +
+              '<a href="https://github.com/sohamsangole/' + c.repo + '" target="_blank" rel="noopener noreferrer" class="font-medium text-text-primary no-underline hover:underline flex-shrink-0">' + c.repo + '</a>' +
+              '<span class="text-text-muted text-[10px] select-none flex-shrink-0">/</span>' +
+              '<a href="' + c.url + '" target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-text-primary text-[11px] sm:text-xs truncate max-w-[320px] sm:max-w-[440px] no-underline hover:underline" title="' + c.message.replace(/"/g, '&quot;') + '">' + c.message + '</a>' +
+            '</div>' +
+            '<span class="text-[11px] text-text-muted flex-shrink-0 font-mono">' + c.date + '</span>';
+          pushListEl.appendChild(row);
+        });
+      }
 
-            Promise.all(promises).then(function(results) {
-              var all = results.flat().filter(function(c) { return c.sha; });
-              all.sort(function(a, b) { return b.timestamp - a.timestamp; });
-              var topCommits = all.slice(0, 4);
-              if (topCommits.length === 0) return;
-
-              pushListEl.innerHTML = '';
-              topCommits.forEach(function(c) {
-                var row = document.createElement('div');
-                row.className = 'flex items-center justify-between py-1.5 -mx-2 px-2 rounded hover:bg-black/[0.025] dark:hover:bg-white/[0.03] border-b border-border-subtle/30 last:border-0 text-text-secondary hover:text-text-primary transition-colors gap-3';
-                row.innerHTML = 
-                  '<div class="flex items-baseline gap-2 min-w-0 pr-2">' +
-                    '<a href="https://github.com/sohamsangole/' + c.repo + '" target="_blank" rel="noopener noreferrer" class="font-medium text-text-primary no-underline hover:underline flex-shrink-0">' + c.repo + '</a>' +
-                    '<span class="text-text-muted text-[10px] select-none flex-shrink-0">/</span>' +
-                    '<a href="' + c.url + '" target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-text-primary text-[11px] sm:text-xs truncate max-w-[320px] sm:max-w-[440px] no-underline hover:underline" title="' + c.message.replace(/"/g, '&quot;') + '">' + c.message + '</a>' +
-                  '</div>' +
-                  '<span class="text-[11px] text-text-muted flex-shrink-0 font-mono">' + c.date + '</span>';
-                pushListEl.appendChild(row);
-              });
-            });
+      // Dynamically fetch recent commits live in the browser across all repositories
+      if (pushListEl) {
+        fetch('https://api.github.com/users/sohamsangole/events/public?per_page=15')
+          .then(function(res) {
+            if (!res.ok) throw new Error('Events fetch failed');
+            return res.json();
           })
-          .catch(function() {});
+          .then(function(events) {
+            if (!Array.isArray(events)) throw new Error('Invalid events');
+            var commits = [];
+            events.forEach(function(ev) {
+              if (ev.type === 'PushEvent' && ev.payload && Array.isArray(ev.payload.commits)) {
+                var repoName = ev.repo ? ev.repo.name.replace(/^sohamsangole\//i, '') : '';
+                var fullRepo = ev.repo ? ev.repo.name : ('sohamsangole/' + repoName);
+                var createdAt = ev.created_at;
+                ev.payload.commits.slice().reverse().forEach(function(c) {
+                  if (commits.length >= 4) return;
+                  var rawMsg = c.message || '';
+                  var firstLine = rawMsg.split('\n')[0].trim();
+                  var shaShort = (c.sha || '').substring(0, 7);
+                  commits.push({
+                    repo: repoName,
+                    message: firstLine || ('Commit ' + shaShort),
+                    sha: shaShort,
+                    url: 'https://github.com/' + fullRepo + '/commit/' + c.sha,
+                    date: formatRelativeDate(createdAt),
+                    timestamp: new Date(createdAt).getTime()
+                  });
+                });
+              }
+            });
+
+            if (commits.length > 0) {
+              renderCommits(commits.slice(0, 4));
+            } else {
+              throw new Error('No push events');
+            }
+          })
+          .catch(function() {
+            // Fallback: fetch repos then commits
+            fetch('https://api.github.com/users/sohamsangole/repos?sort=pushed&per_page=4')
+              .then(function(res) { return res.json(); })
+              .then(function(repos) {
+                if (!Array.isArray(repos)) return;
+                var promises = repos.slice(0, 3).map(function(r) {
+                  return fetch('https://api.github.com/repos/' + r.full_name + '/commits?per_page=3')
+                    .then(function(res) { return res.json(); })
+                    .then(function(commits) {
+                      if (!Array.isArray(commits)) return [];
+                      return commits.map(function(c) {
+                        return {
+                          repo: r.name,
+                          message: (c.commit && c.commit.message) ? c.commit.message.split('\n')[0] : ('Commit ' + c.sha.substring(0, 7)),
+                          sha: c.sha.substring(0, 7),
+                          url: c.html_url || ('https://github.com/' + r.full_name + '/commit/' + c.sha),
+                          date: formatRelativeDate(c.commit && c.commit.author ? c.commit.author.date : ''),
+                          timestamp: new Date(c.commit && c.commit.author ? c.commit.author.date : 0).getTime()
+                        };
+                      });
+                    })
+                    .catch(function() { return []; });
+                });
+
+                Promise.all(promises).then(function(results) {
+                  var all = results.flat().filter(function(c) { return c.sha; });
+                  all.sort(function(a, b) { return b.timestamp - a.timestamp; });
+                  var topCommits = all.slice(0, 4);
+                  if (topCommits.length > 0) {
+                    renderCommits(topCommits);
+                  }
+                });
+              })
+              .catch(function() {});
+          });
       }
 
       // Fetch contribution activity
-      fetch('https://github-contributions-api.jogruber.de/v4/sohamsangole?y=last')
+      fetch('https://github-contributions-api.jogruber.de/v4/sohamsangole?y=last', { cache: 'no-cache' })
         .then(function(res) {
           if (!res.ok) throw new Error('API error');
           return res.json();
