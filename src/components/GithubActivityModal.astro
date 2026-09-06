@@ -131,11 +131,15 @@ const contributionGrid = generateMockGrid();
 
         <!-- Days & Grid Container -->
         <div class="flex gap-2">
-          <!-- Day Labels (Mon, Wed, Fri) -->
-          <div class="flex flex-col justify-between py-0.5 text-[9px] font-mono text-text-muted w-6 select-none leading-none h-[88px]">
-            <span>Mon</span>
-            <span>Wed</span>
-            <span>Fri</span>
+          <!-- Day Labels (Mon, Wed, Fri aligned to rows 1, 3, 5; row 0 is Sunday) -->
+          <div class="grid grid-rows-7 gap-[2.5px] py-2 text-[9px] font-mono text-text-muted w-6 select-none">
+            <span class="h-[10px] leading-[10px]"></span>
+            <span class="h-[10px] leading-[10px]">Mon</span>
+            <span class="h-[10px] leading-[10px]"></span>
+            <span class="h-[10px] leading-[10px]">Wed</span>
+            <span class="h-[10px] leading-[10px]"></span>
+            <span class="h-[10px] leading-[10px]">Fri</span>
+            <span class="h-[10px] leading-[10px]"></span>
           </div>
 
           <!-- Heatmap Grid -->
