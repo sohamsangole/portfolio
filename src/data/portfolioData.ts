@@ -17,7 +17,6 @@ export interface Project {
 export const PORTFOLIO_DATA = {
   header: {
     name: "SOHAM SANGOLE",
-    year: "2026",
   },
   hero: {
     title: "Software Engineer",
