@@ -13,7 +13,7 @@ const {
 ---
 
 <!doctype html>
-<html lang="en" class="bg-bg text-text-primary antialiased">
+<html lang="en" class="bg-bg text-text-primary antialiased font-sans">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -31,18 +31,13 @@ const {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     
-    <!-- Fonts (async non-blocking) -->
+    <!-- Google Fonts: Inter & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link 
       rel="stylesheet" 
-      href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Geist:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" 
-      media="print" 
-      onload="this.media='all'" 
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" 
     />
-    <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Geist:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" />
-    </noscript>
     
     <!-- Theme Initializer (zero FOUC) -->
     <script is:inline>
@@ -62,7 +57,7 @@ const {
       }
     </script>
   </head>
-  <body class="bg-bg text-text-primary min-h-screen">
+  <body class="bg-bg text-text-primary min-h-screen font-sans">
     <slot />
   </body>
 </html>

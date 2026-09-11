@@ -14,8 +14,8 @@ export default {
         'modal-bg': 'var(--color-modal-bg)',
       },
       fontFamily: {
-        sans: ['Geist', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
-        mono: ['"Geist Mono"', '"IBM Plex Mono"', 'monospace'],
+        sans: ['Inter', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
       },
       letterSpacing: {
         'tight-heading': '-0.035em',
