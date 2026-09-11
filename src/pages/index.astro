@@ -12,7 +12,7 @@ import CommandMenu from '../components/CommandMenu.astro';
 
 <Layout>
   <!-- Main Desktop 1-Viewport Container (Scrolls naturally on mobile or ultra-small screens) -->
-  <main class="w-full min-h-screen lg:h-screen lg:max-h-screen flex flex-col justify-between px-6 sm:px-10 md:px-14 lg:px-16 py-3 sm:py-4 lg:py-5 max-w-[1140px] mx-auto box-border">
+  <main class="w-full min-h-screen lg:h-screen lg:max-h-screen flex flex-col justify-start lg:justify-between px-6 sm:px-10 md:px-14 lg:px-16 py-3 sm:py-4 lg:py-5 max-w-[1140px] mx-auto box-border">
     <!-- Top Section: Header & Hero -->
     <div class="flex flex-col w-full">
       <Header />
@@ -20,16 +20,23 @@ import CommandMenu from '../components/CommandMenu.astro';
     </div>
 
     <!-- Divider -->
-    <div class="w-full border-b border-border-subtle my-1.5 sm:my-2"></div>
+    <div class="w-full border-b border-border-subtle my-1 sm:my-1.5 lg:my-2"></div>
 
-    <!-- Middle Section: Projects (3 rows) -->
-    <div class="w-full my-auto py-0.5">
+    <!-- Middle Section 1: Experience / Now -->
+    <div class="w-full py-0.5">
+      <ExperienceNow />
+    </div>
+
+    <!-- Divider -->
+    <div class="w-full border-b border-border-subtle my-1 sm:my-1.5 lg:my-2"></div>
+
+    <!-- Middle Section 2: Projects (rows) -->
+    <div class="w-full my-0 lg:my-auto py-0.5">
       <Projects />
     </div>
 
-    <!-- Bottom Section: Experience / Now & Footer -->
-    <div class="flex flex-col w-full mt-auto pt-1 space-y-2 sm:space-y-3">
-      <ExperienceNow />
+    <!-- Bottom Section: Footer -->
+    <div class="flex flex-col w-full mt-2 lg:mt-auto pt-1">
       <Footer />
     </div>
   </main>

@@ -50,7 +50,7 @@ const contributionGrid = generateMockGrid();
 <!-- GitHub Contribution Activity Dialog -->
 <div 
   id="github-modal" 
-  class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-100"
+  class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-100"
   role="dialog"
   aria-modal="true"
   aria-hidden="true"
@@ -64,29 +64,29 @@ const contributionGrid = generateMockGrid();
   <!-- Modal Container -->
   <div 
     id="github-modal-container"
-    class="relative w-full max-w-3xl bg-modal-bg border border-border-subtle shadow-2xl p-5 sm:px-7 sm:py-5.5 rounded-none max-h-[92vh] sm:max-h-[95vh] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+    class="relative w-full max-w-3xl bg-modal-bg border border-border-subtle shadow-2xl p-4 sm:px-7 sm:py-5.5 rounded-none max-h-[90vh] sm:max-h-[95vh] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
   >
     <!-- Close button -->
     <button 
       id="github-modal-close-btn"
-      class="absolute top-4 right-4 text-text-secondary hover:text-text-primary p-2 font-mono text-xs tracking-wider flex items-center gap-1.5 focus:outline-none transition-colors"
+      class="absolute top-3 right-3 sm:top-4 sm:right-4 text-text-secondary hover:text-text-primary p-1.5 sm:p-2 font-mono text-xs tracking-wider flex items-center gap-1.5 focus:outline-none transition-colors"
       aria-label="Close activity modal"
     >
-      <span class="text-[11px] uppercase font-mono text-text-muted">ESC</span>
-      <span class="text-base leading-none">✕</span>
+      <span class="text-[10px] sm:text-[11px] uppercase font-mono text-text-muted">ESC</span>
+      <span class="text-sm sm:text-base leading-none">✕</span>
     </button>
 
     <!-- Modal Header -->
-    <div class="border-b border-border-subtle pb-2.5 pr-12">
+    <div class="border-b border-border-subtle pb-2 sm:pb-2.5 pr-10 sm:pr-12">
       <div class="flex items-center justify-between flex-wrap gap-2">
-        <div class="flex items-center gap-2.5">
+        <div class="flex items-center gap-2 sm:gap-2.5">
           <img 
             src="https://github.com/sohamsangole.png?size=72" 
             alt="sohamsangole" 
-            class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-border-subtle object-cover bg-surface-subtle"
+            class="w-6 h-6 sm:w-8 sm:h-8 rounded-full border border-border-subtle object-cover bg-surface-subtle"
             loading="lazy"
           />
-          <h2 class="text-xl sm:text-2xl font-medium tracking-tight text-text-primary">
+          <h2 class="text-lg sm:text-2xl font-medium tracking-tight text-text-primary">
             sohamsangole
           </h2>
         </div>
@@ -94,7 +94,7 @@ const contributionGrid = generateMockGrid();
           href="https://github.com/sohamsangole" 
           target="_blank" 
           rel="noopener noreferrer"
-          class="font-mono text-xs text-text-secondary hover:text-text-primary flex items-center gap-1 hover:underline"
+          class="font-mono text-[11px] sm:text-xs text-text-secondary hover:text-text-primary flex items-center gap-1 hover:underline"
         >
           <span>github.com/sohamsangole</span>
           <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -106,33 +106,33 @@ const contributionGrid = generateMockGrid();
     </div>
 
     <!-- Quick Stats Row -->
-    <div class="grid grid-cols-3 gap-3 py-2.5 border-b border-border-subtle/60 text-xs sm:text-sm font-mono">
+    <div class="grid grid-cols-3 gap-2 sm:gap-3 py-2 sm:py-2.5 border-b border-border-subtle/60 text-xs sm:text-sm font-mono">
       <div class="flex flex-col">
-        <span class="text-[10px] uppercase text-text-muted tracking-wider">Activity (1 Year)</span>
-        <span id="github-activity-total" class="text-base sm:text-lg font-medium text-text-primary mt-0.5">842 contributions</span>
+        <span class="text-[9px] sm:text-[10px] uppercase text-text-muted tracking-wider">Activity (1 Year)</span>
+        <span id="github-activity-total" class="text-sm sm:text-lg font-medium text-text-primary mt-0.5">842 contributions</span>
       </div>
       <div class="flex flex-col">
-        <span class="text-[10px] uppercase text-text-muted tracking-wider">Current Streak</span>
-        <span id="github-current-streak" class="text-base sm:text-lg font-medium text-text-primary mt-0.5">18 days</span>
+        <span class="text-[9px] sm:text-[10px] uppercase text-text-muted tracking-wider">Current Streak</span>
+        <span id="github-current-streak" class="text-sm sm:text-lg font-medium text-text-primary mt-0.5">18 days</span>
       </div>
       <div class="flex flex-col">
-        <span class="text-[10px] uppercase text-text-muted tracking-wider">Longest Streak</span>
-        <span id="github-longest-streak" class="text-base sm:text-lg font-medium text-text-primary mt-0.5">46 days</span>
+        <span class="text-[9px] sm:text-[10px] uppercase text-text-muted tracking-wider">Longest Streak</span>
+        <span id="github-longest-streak" class="text-sm sm:text-lg font-medium text-text-primary mt-0.5">46 days</span>
       </div>
     </div>
 
     <!-- Contribution Chart Area -->
-    <div class="py-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <div class="py-2 sm:py-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       <div class="min-w-[640px]">
         <!-- Month Labels -->
-        <div id="github-months-header" class="flex justify-between pl-8 pr-2 pb-1 text-[10px] font-mono text-text-muted select-none">
+        <div id="github-months-header" class="flex justify-between pl-8 pr-2 pb-0.5 sm:pb-1 text-[9px] sm:text-[10px] font-mono text-text-muted select-none">
           {ROLLING_MONTHS.map(m => <span>{m}</span>)}
         </div>
 
         <!-- Days & Grid Container -->
         <div class="flex gap-2">
           <!-- Day Labels (Mon, Wed, Fri aligned to rows 1, 3, 5; row 0 is Sunday) -->
-          <div class="grid grid-rows-7 gap-[2.5px] py-2 text-[9px] font-mono text-text-muted w-6 select-none">
+          <div class="grid grid-rows-7 gap-[2.5px] py-1.5 sm:py-2 text-[9px] font-mono text-text-muted w-6 select-none">
             <span class="h-[10px] leading-[10px]"></span>
             <span class="h-[10px] leading-[10px]">Mon</span>
             <span class="h-[10px] leading-[10px]"></span>
@@ -143,7 +143,7 @@ const contributionGrid = generateMockGrid();
           </div>
 
           <!-- Heatmap Grid -->
-          <div id="github-contributions-grid" class="flex-1 grid grid-flow-col grid-rows-7 gap-[2.5px] p-2 bg-black/[0.02] dark:bg-white/[0.02] border border-border-subtle/50 rounded">
+          <div id="github-contributions-grid" class="flex-1 grid grid-flow-col grid-rows-7 gap-[2.5px] p-1.5 sm:p-2 bg-black/[0.02] dark:bg-white/[0.02] border border-border-subtle/50 rounded">
             {contributionGrid.map((week) => (
               week.map((cell) => (
                 <div 
@@ -156,7 +156,7 @@ const contributionGrid = generateMockGrid();
         </div>
 
         <!-- Legend Footer -->
-        <div class="flex items-center justify-between mt-2 text-[10px] font-mono text-text-muted select-none">
+        <div class="flex items-center justify-between mt-1 sm:mt-2 text-[9px] sm:text-[10px] font-mono text-text-muted select-none">
           <span>Recent repository contributions</span>
           <div class="flex items-center gap-1.5">
             <span>Less</span>
@@ -172,14 +172,14 @@ const contributionGrid = generateMockGrid();
     </div>
 
     <!-- Recent Commits Section -->
-    <div id="github-recent-commits-section" class="pt-2.5 border-t border-border-subtle flex flex-col space-y-2">
-      <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-text-secondary select-none">
+    <div id="github-recent-commits-section" class="pt-2 sm:pt-2.5 border-t border-border-subtle flex flex-col space-y-1 sm:space-y-2">
+      <div class="flex items-center justify-between text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-text-secondary select-none">
         <span class="font-medium text-text-primary">RECENT COMMITS</span>
       </div>
 
       <div id="github-push-events-list" class="flex flex-col space-y-0.5 text-xs font-mono pb-0.5">
         {recentCommits.map((c) => (
-          <div class="flex items-center justify-between py-1.5 -mx-2 px-2 rounded hover:bg-black/[0.025] dark:hover:bg-white/[0.03] border-b border-border-subtle/30 last:border-0 text-text-secondary hover:text-text-primary transition-colors gap-3">
+          <div class="flex items-center justify-between py-1 sm:py-1.5 -mx-1.5 sm:-mx-2 px-1.5 sm:px-2 rounded hover:bg-black/[0.025] dark:hover:bg-white/[0.03] border-b border-border-subtle/30 last:border-0 text-text-secondary hover:text-text-primary transition-colors gap-2 sm:gap-3">
             <div class="flex items-baseline gap-2 min-w-0 pr-2">
               <a 
                 href={`https://github.com/sohamsangole/${c.repo}`} 
@@ -194,13 +194,13 @@ const contributionGrid = generateMockGrid();
                 href={c.url} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                class="text-text-secondary hover:text-text-primary text-[11px] sm:text-xs truncate max-w-[320px] sm:max-w-[440px] no-underline hover:underline" 
+                class="text-text-secondary hover:text-text-primary text-[11px] sm:text-xs truncate max-w-[240px] sm:max-w-[440px] no-underline hover:underline" 
                 title={c.message}
               >
                 {c.message}
               </a>
             </div>
-            <span class="text-[11px] text-text-muted flex-shrink-0 font-mono">{c.date}</span>
+            <span class="text-[10px] sm:text-[11px] text-text-muted flex-shrink-0 font-mono">{c.date}</span>
           </div>
         ))}
       </div>
@@ -246,14 +246,14 @@ const contributionGrid = generateMockGrid();
         pushListEl.innerHTML = '';
         commits.forEach(function(c) {
           var row = document.createElement('div');
-          row.className = 'flex items-center justify-between py-1.5 -mx-2 px-2 rounded hover:bg-black/[0.025] dark:hover:bg-white/[0.03] border-b border-border-subtle/30 last:border-0 text-text-secondary hover:text-text-primary transition-colors gap-3';
+          row.className = 'flex items-center justify-between py-1 sm:py-1.5 -mx-1.5 sm:-mx-2 px-1.5 sm:px-2 rounded hover:bg-black/[0.025] dark:hover:bg-white/[0.03] border-b border-border-subtle/30 last:border-0 text-text-secondary hover:text-text-primary transition-colors gap-2 sm:gap-3';
           row.innerHTML = 
             '<div class="flex items-baseline gap-2 min-w-0 pr-2">' +
               '<a href="https://github.com/sohamsangole/' + c.repo + '" target="_blank" rel="noopener noreferrer" class="font-medium text-text-primary no-underline hover:underline flex-shrink-0">' + c.repo + '</a>' +
               '<span class="text-text-muted text-[10px] select-none flex-shrink-0">/</span>' +
-              '<a href="' + c.url + '" target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-text-primary text-[11px] sm:text-xs truncate max-w-[320px] sm:max-w-[440px] no-underline hover:underline" title="' + c.message.replace(/"/g, '&quot;') + '">' + c.message + '</a>' +
+              '<a href="' + c.url + '" target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-text-primary text-[11px] sm:text-xs truncate max-w-[240px] sm:max-w-[440px] no-underline hover:underline" title="' + c.message.replace(/"/g, '&quot;') + '">' + c.message + '</a>' +
             '</div>' +
-            '<span class="text-[11px] text-text-muted flex-shrink-0 font-mono">' + c.date + '</span>';
+            '<span class="text-[10px] sm:text-[11px] text-text-muted flex-shrink-0 font-mono">' + c.date + '</span>';
           pushListEl.appendChild(row);
         });
       }

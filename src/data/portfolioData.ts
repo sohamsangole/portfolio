@@ -48,12 +48,12 @@ export const PORTFOLIO_DATA = {
       id: "stella",
       number: "02",
       title: "Stella",
-      shortDescription: "A self-hosted AI software engineer that turns GitHub issues into tested pull requests.",
+      shortDescription: "Event-driven automation platform orchestrating distributed Celery workers and state machines to resolve GitHub issues into tested pull requests.",
       technologies: ["Python", "FastAPI", "Celery", "Redis", "GitHub"],
       externalUrl: "https://github.com/sohamsangole/stella",
       hasModal: true,
       deepDive: {
-        summary: "An autonomous agentic developer that hooks into GitHub webhooks, parses problem context, iterates on code changes in an isolated workspace, runs tests, and opens clean pull requests.",
+        summary: "An event-driven automation platform orchestrating distributed Celery workers and state machines. Hooks into GitHub webhooks to autonomously parse problem context, execute code changes in isolated sandboxes, run test suites, and open verified pull requests.",
         flow: "[PLAN] → [CODE] → [REVIEW] → [TEST] → [PR]",
         highlights: [
           "Event-driven state machine loop: PLAN → CODE → REVIEW → TEST → COMPLETED",

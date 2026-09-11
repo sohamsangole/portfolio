@@ -9,7 +9,7 @@ const { project } = Astro.props;
 ---
 
 <div 
-  class="project-row group relative w-full -mx-3 px-3 py-2 sm:py-2.5 rounded transition-all duration-200 hover:bg-black/[0.035] dark:hover:bg-white/[0.04] cursor-pointer border-b border-border-subtle/50 last:border-b-0"
+  class="project-row group relative w-full px-0 sm:-mx-3 sm:px-3 py-2 sm:py-2.5 rounded transition-all duration-200 hover:bg-black/[0.035] dark:hover:bg-white/[0.04] cursor-pointer border-b border-border-subtle/50 last:border-b-0"
   data-project-id={project.id}
   tabindex="0"
   role="button"
@@ -25,13 +25,13 @@ const { project } = Astro.props;
       <!-- Title & Details -->
       <div class="flex-1 min-w-0">
         <div class="flex items-baseline justify-between gap-2">
-          <h3 class="text-sm sm:text-[15px] font-medium text-text-primary group-hover:text-black dark:group-hover:text-white transition-colors duration-150 truncate">
+          <h3 class="text-sm sm:text-[15px] font-medium text-text-primary group-hover:text-black dark:group-hover:text-white transition-colors duration-150 break-words whitespace-normal sm:truncate">
             {project.title}
           </h3>
         </div>
 
-        <!-- Description (one line) -->
-        <p class="text-xs sm:text-[13px] text-text-secondary mt-0.5 truncate leading-normal">
+        <!-- Description (up to 2 lines on mobile, 1 line on desktop) -->
+        <p class="text-xs sm:text-[13px] text-text-secondary mt-0.5 line-clamp-2 sm:line-clamp-none sm:truncate leading-normal">
           {project.shortDescription}
         </p>
 
