@@ -59,24 +59,23 @@ export async function getRecentCommits(): Promise<RecentCommit[]> {
   }
 
   try {
-    // Dynamically fetch recently pushed repos from GitHub
-    const reposEndpoint = token
-      ? "https://api.github.com/user/repos?sort=pushed&per_page=6&affiliation=owner"
-      : "https://api.github.com/users/sohamsangole/repos?sort=pushed&per_page=6";
+    // Strictly query public repositories to prevent any private repositories or commits from being leaked
+    const reposEndpoint = "https://api.github.com/users/sohamsangole/repos?sort=pushed&per_page=6&type=public";
 
     let reposRes = await fetch(reposEndpoint, { headers });
 
-    // If token request fails (e.g. 401 bad token), fallback to public repos
+    // If token request fails (e.g. 401 bad token), fallback to unauthenticated public repos
     if (!reposRes.ok && token) {
       delete headers["Authorization"];
-      reposRes = await fetch("https://api.github.com/users/sohamsangole/repos?sort=pushed&per_page=6", { headers });
+      reposRes = await fetch(reposEndpoint, { headers });
     }
 
     let targetRepos: any[] = [];
     if (reposRes.ok) {
       const reposData = await reposRes.json();
       if (Array.isArray(reposData)) {
-        targetRepos = reposData.slice(0, 4);
+        // Defense-in-depth: explicitly ensure no private repos can ever be included
+        targetRepos = reposData.filter((r: any) => !r.private).slice(0, 4);
       }
     }
 

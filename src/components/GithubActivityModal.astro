@@ -243,17 +243,44 @@ const contributionGrid = generateMockGrid();
 
       function renderCommits(commits) {
         if (!pushListEl || !commits || commits.length === 0) return;
-        pushListEl.innerHTML = '';
+        pushListEl.replaceChildren();
         commits.forEach(function(c) {
           var row = document.createElement('div');
           row.className = 'flex items-center justify-between py-1 sm:py-1.5 -mx-1.5 sm:-mx-2 px-1.5 sm:px-2 rounded hover:bg-black/[0.025] dark:hover:bg-white/[0.03] border-b border-border-subtle/30 last:border-0 text-text-secondary hover:text-text-primary transition-colors gap-2 sm:gap-3';
-          row.innerHTML = 
-            '<div class="flex items-baseline gap-2 min-w-0 pr-2">' +
-              '<a href="https://github.com/sohamsangole/' + c.repo + '" target="_blank" rel="noopener noreferrer" class="font-medium text-text-primary no-underline hover:underline flex-shrink-0">' + c.repo + '</a>' +
-              '<span class="text-text-muted text-[10px] select-none flex-shrink-0">/</span>' +
-              '<a href="' + c.url + '" target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-text-primary text-[11px] sm:text-xs truncate max-w-[240px] sm:max-w-[440px] no-underline hover:underline" title="' + c.message.replace(/"/g, '&quot;') + '">' + c.message + '</a>' +
-            '</div>' +
-            '<span class="text-[10px] sm:text-[11px] text-text-muted flex-shrink-0 font-mono">' + c.date + '</span>';
+
+          var leftCol = document.createElement('div');
+          leftCol.className = 'flex items-baseline gap-2 min-w-0 pr-2';
+
+          var repoLink = document.createElement('a');
+          repoLink.href = 'https://github.com/sohamsangole/' + encodeURIComponent(c.repo || '');
+          repoLink.target = '_blank';
+          repoLink.rel = 'noopener noreferrer';
+          repoLink.className = 'font-medium text-text-primary no-underline hover:underline flex-shrink-0';
+          repoLink.textContent = c.repo || '';
+
+          var slash = document.createElement('span');
+          slash.className = 'text-text-muted text-[10px] select-none flex-shrink-0';
+          slash.textContent = '/';
+
+          var commitLink = document.createElement('a');
+          var isSafeUrl = typeof c.url === 'string' && c.url.startsWith('https://github.com/');
+          commitLink.href = isSafeUrl ? c.url : '#';
+          commitLink.target = '_blank';
+          commitLink.rel = 'noopener noreferrer';
+          commitLink.className = 'text-text-secondary hover:text-text-primary text-[11px] sm:text-xs truncate max-w-[240px] sm:max-w-[440px] no-underline hover:underline';
+          commitLink.title = c.message || '';
+          commitLink.textContent = c.message || '';
+
+          leftCol.appendChild(repoLink);
+          leftCol.appendChild(slash);
+          leftCol.appendChild(commitLink);
+
+          var dateSpan = document.createElement('span');
+          dateSpan.className = 'text-[10px] sm:text-[11px] text-text-muted flex-shrink-0 font-mono';
+          dateSpan.textContent = c.date || '';
+
+          row.appendChild(leftCol);
+          row.appendChild(dateSpan);
           pushListEl.appendChild(row);
         });
       }
@@ -331,7 +358,7 @@ const contributionGrid = generateMockGrid();
 
           // Render live cells with accurate Sunday-to-Saturday row alignment
           if (gridEl && contributions.length > 0) {
-            gridEl.innerHTML = '';
+            gridEl.replaceChildren();
 
             var firstDateStr = contributions[0].date;
             var parts = firstDateStr.split('-');
@@ -352,8 +379,8 @@ const contributionGrid = generateMockGrid();
             });
           }
         })
-        .catch(function() {
-          if (statusEl) statusEl.textContent = 'Live Sync (Offline Fallback)';
+        .catch(function(err) {
+          console.debug('Live contributions sync fallback to static data:', err);
         });
     }
 
@@ -393,13 +420,6 @@ const contributionGrid = generateMockGrid();
           closeModal();
         }
       });
-
-      // Background pre-fetch on idle
-      if ('requestIdleCallback' in window) {
-        window.requestIdleCallback(fetchLiveGithubData);
-      } else {
-        setTimeout(fetchLiveGithubData, 1000);
-      }
     }
 
     if (document.readyState === 'loading') {

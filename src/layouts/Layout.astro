@@ -18,6 +18,24 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
+
+    <!-- Security Headers & Policies -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    {import.meta.env.PROD && (
+      <meta 
+        http-equiv="Content-Security-Policy" 
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https://github.com https://*.githubusercontent.com; connect-src 'self' https://api.github.com https://github-contributions-api.jogruber.de; base-uri 'self'; form-action 'self';" 
+      />
+    )}
+
+    <!-- Anti-Clickjacking Frame Defense (GitHub Pages) -->
+    <script is:inline>
+      if (window.top !== window.self) {
+        window.top.location.replace(window.self.location.href);
+      }
+    </script>
+
     <link rel="icon" type="image/png" href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/favicon.png`} />
     <link rel="shortcut icon" href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/favicon.ico`} />
     <link rel="apple-touch-icon" href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/apple-touch-icon.png`} />
