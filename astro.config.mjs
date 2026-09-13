@@ -5,6 +5,9 @@ import tailwind from '@astrojs/tailwind';
 export default defineConfig({
   site: 'https://sohamsangole.github.io',
   base: process.env.NODE_ENV === 'production' ? '/portfolio' : '/',
+  server: {
+    host: true,
+  },
   integrations: [tailwind({
     applyBaseStyles: false,
   })],
