@@ -1,5 +1,8 @@
 ---
 import { PORTFOLIO_DATA } from '../data/portfolioData';
+
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+const photoUrl = `${baseUrl}/soham.png`;
 ---
 
 <section class="w-full grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-8 py-1 sm:py-1.5 text-xs sm:text-[13px]">
@@ -39,7 +42,7 @@ import { PORTFOLIO_DATA } from '../data/portfolioData';
           aria-label="View Soham's photo"
         >
           <img 
-            src="/soham.png?v=final" 
+            src={photoUrl} 
             alt="Soham Sangole" 
             width="60"
             height="60"
@@ -84,7 +87,7 @@ import { PORTFOLIO_DATA } from '../data/portfolioData';
       <span class="text-sm leading-none">✕</span>
     </button>
     <img 
-      src="/soham.png?v=final" 
+      src={photoUrl} 
       alt="Soham Sangole" 
       class="max-w-full max-h-[70vh] w-auto h-auto rounded object-contain ring-1 ring-border-subtle block"
     />
