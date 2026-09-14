@@ -10,6 +10,18 @@ const {
   title = "Soham Sangole | Software Engineer",
   description = "Software Engineer based in Mumbai, India. Building robust, scalable systems and distributed applications."
 } = Astro.props;
+
+const siteUrl = "https://sohamsangole.github.io";
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+const canonicalUrl = `${siteUrl}${baseUrl}/`;
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Soham Sangole",
+  "url": canonicalUrl,
+  "jobTitle": "Software Engineer"
+};
 ---
 
 <!doctype html>
@@ -36,18 +48,29 @@ const {
       }
     </script>
 
-    <link rel="icon" type="image/png" href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/favicon.png`} />
-    <link rel="shortcut icon" href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/favicon.ico`} />
-    <link rel="apple-touch-icon" href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/apple-touch-icon.png`} />
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" href={`${baseUrl}/favicon.png`} />
+    <link rel="shortcut icon" href={`${baseUrl}/favicon.ico`} />
+    <link rel="apple-touch-icon" href={`${baseUrl}/apple-touch-icon.png`} />
 
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Primary Meta Tags -->
     <title>{title}</title>
+    <meta name="title" content={title} />
     <meta name="description" content={description} />
     <meta name="author" content="Soham Sangole" />
 
-    <!-- Open Graph / Meta -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Soham Sangole" />
+    <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
+
+    <!-- JSON-LD Structured Data (Schema.org Person) -->
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
     
     <!-- Google Fonts: Inter & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
