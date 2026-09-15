@@ -14,6 +14,12 @@ export interface Project {
   };
 }
 
+export interface NowItem {
+  text: string;
+  badge?: string;
+  tooltip?: string;
+}
+
 export const PORTFOLIO_DATA = {
   header: {
     name: "SOHAM SANGOLE",
@@ -82,10 +88,17 @@ export const PORTFOLIO_DATA = {
   now: {
     title: "NOW",
     items: [
-      "Learning Japanese",
-      "Curating Spotify playlists",
-      "Building interesting things",
-    ],
+      {
+        text: "Learning 日本語",
+        badge: "JLPT N5",
+      },
+      {
+        text: "Curating Spotify playlists",
+      },
+      {
+        text: "Building interesting things",
+      },
+    ] as (string | NowItem)[],
   },
   footer: {
     links: [

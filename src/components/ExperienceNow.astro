@@ -52,12 +52,26 @@ const photoUrl = `${baseUrl}/soham.png`;
         </button>
       </div>
       <ul class="flex flex-col space-y-0.5 text-text-secondary">
-        {PORTFOLIO_DATA.now.items.map((item) => (
-          <li class="leading-normal flex items-center gap-2">
-            <span class="w-1 h-1 rounded-full bg-border-subtle flex-shrink-0"></span>
-            <span>{item}</span>
-          </li>
-        ))}
+        {PORTFOLIO_DATA.now.items.map((item) => {
+          const isObj = typeof item === 'object' && item !== null;
+          const text = isObj ? item.text : item;
+          const badge = isObj ? item.badge : null;
+          const tooltip = isObj ? item.tooltip : null;
+
+          return (
+            <li class="leading-normal flex items-center gap-2">
+              <span class="w-1 h-1 rounded-full bg-border-subtle flex-shrink-0"></span>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span>{text}</span>
+                {badge && (
+                  <span class="font-mono text-[9px] uppercase tracking-wider px-1.5 py-[0.5px] rounded bg-black/[0.03] dark:bg-white/[0.05] border border-border-subtle text-text-muted select-none">
+                    {badge}
+                  </span>
+                )}
+              </div>
+            </li>
+          );
+        })}
       </ul>
     </div>
   </div>
@@ -73,7 +87,7 @@ const photoUrl = `${baseUrl}/soham.png`;
 >
   <div 
     id="photo-modal-backdrop"
-    class="absolute inset-0 bg-black/60 backdrop-blur-xs cursor-pointer"
+    class="absolute inset-0 bg-black/60 backdrop-blur-sm cursor-pointer"
   ></div>
   <div 
     class="relative bg-modal-bg border border-border-subtle p-2.5 sm:p-3 rounded-lg shadow-2xl max-w-[340px] w-full flex flex-col items-center"
