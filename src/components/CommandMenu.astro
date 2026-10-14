@@ -109,10 +109,13 @@
   Info copied to clipboard
 </div>
 
-<script is:inline>
+<script>
+  import { animateModalOpen } from '../scripts/animations';
+
   (function() {
     function initQuickModal() {
       var modal = document.getElementById('quick-info-modal');
+      var container = document.getElementById('quick-info-container');
       var backdrop = document.getElementById('quick-info-backdrop');
       var closeBtn = document.getElementById('quick-info-close-btn');
       var copyAllBtn = document.getElementById('copy-all-card-btn');
@@ -132,7 +135,7 @@
         "Focus: Backend Systems"
       ].join("\n");
 
-      function showToast(msg) {
+      function showToast(msg: string) {
         if (!toast) return;
         toast.textContent = msg;
         toast.style.opacity = '1';
@@ -149,6 +152,8 @@
         modal.style.pointerEvents = 'auto';
         modal.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
+
+        animateModalOpen(container, backdrop);
       }
 
       function closeModal() {
