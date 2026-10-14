@@ -1,156 +1,91 @@
 ---
 import { PORTFOLIO_DATA } from '../data/portfolioData';
-
-const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
-const photoUrl = `${baseUrl}/soham.png`;
 ---
 
-<section class="w-full grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-8 py-1 sm:py-1.5 text-xs sm:text-[13px]">
-  <!-- Experience Column -->
-  <div class="flex flex-col">
-    <span class="text-[10px] sm:text-[11px] uppercase font-mono tracking-[0.14em] text-text-secondary font-medium mb-1 select-none">
+<div class="w-full flex flex-col space-y-3.5 sm:space-y-4">
+  <!-- Card 1: EXPERIENCE -->
+  <div class="w-full p-4 sm:p-4.5 rounded-xl border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.02] dark:bg-[#080808] flex flex-col shadow-sm">
+    <div class="text-[9.5px] uppercase font-mono tracking-widest text-text-muted font-medium mb-3 select-none">
       EXPERIENCE
-    </span>
-    <div class="flex flex-col space-y-2">
-      {PORTFOLIO_DATA.experiences.map((exp) => (
-        <div class="flex flex-col space-y-0.5">
-          <div class="flex items-baseline justify-between gap-2">
-            <span class="font-medium text-text-primary text-xs sm:text-[13px]">{exp.company}</span>
-            <span class="text-[11px] font-mono text-text-muted">{exp.period}</span>
+    </div>
+
+    <!-- Vertical Timeline Rail -->
+    <div class="relative pl-3.5 border-l border-black/15 dark:border-white/15 space-y-3.5 ml-1.5">
+      {PORTFOLIO_DATA.experiences.map((exp) => {
+        const isCurrent = exp.period.toLowerCase().includes('present');
+
+        return (
+          <div class="relative flex flex-col group">
+            <!-- Timeline Node Marker -->
+            {isCurrent ? (
+              <span class="absolute -left-[18px] top-1.5 flex h-2.5 w-2.5 items-center justify-center">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500/60 opacity-75"></span>
+                <span class="relative inline-block w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-[#080808]"></span>
+              </span>
+            ) : (
+              <span class="absolute -left-[18px] top-1.5 w-2 h-2 rounded-full bg-black/30 dark:bg-white/30 ring-2 ring-white dark:ring-[#080808]"></span>
+            )}
+
+            <!-- Header: Company & Period -->
+            <div class="flex items-baseline justify-between gap-2">
+              <span class="font-medium text-text-primary text-[13px] tracking-tight group-hover:text-black dark:group-hover:text-white transition-colors">
+                {exp.company}
+              </span>
+              <span class={`text-[10px] font-mono tracking-tight ${isCurrent ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-text-muted'}`}>
+                {exp.period}
+              </span>
+            </div>
+
+            <!-- Subheader: Role & Location -->
+            <div class="flex items-baseline justify-between text-text-secondary text-[11.5px] mt-1">
+              <span>{exp.role}</span>
+              {exp.location && (
+                <span class="text-[10px] font-mono text-text-muted">{exp.location}</span>
+              )}
+            </div>
           </div>
-          <div class="flex items-center justify-between text-text-secondary text-xs">
-            <span>{exp.role}</span>
-            {exp.location && <span class="text-[11px] text-text-muted">{exp.location}</span>}
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   </div>
 
-  <!-- Now Column -->
-  <div class="flex flex-col">
-    <span class="text-[10px] sm:text-[11px] uppercase font-mono tracking-[0.14em] text-text-secondary font-medium mb-1 select-none">
-      {PORTFOLIO_DATA.now.title}
-    </span>
-    <div class="flex items-center gap-3 sm:gap-4 mt-0.5">
-      <div class="relative shrink-0 group">
-        <button
-          id="photo-modal-trigger"
-          type="button"
-          class="block p-0 bg-transparent border-0 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-text-primary rounded-lg overflow-hidden"
-          title="Click to view photo"
-          aria-label="View Soham's photo"
-        >
-          <img 
-            src={photoUrl} 
-            alt="Soham Sangole" 
-            width="60"
-            height="60"
-            class="w-14 h-14 sm:w-[62px] sm:h-[62px] rounded-lg object-cover ring-1 ring-border-subtle shadow-sm grayscale contrast-[1.02] group-hover:grayscale-0 group-hover:scale-[1.02] transition-all duration-300 block"
-            loading="lazy"
-          />
-        </button>
-      </div>
-      <ul class="flex flex-col space-y-0.5 text-text-secondary">
-        {PORTFOLIO_DATA.now.items.map((item) => {
-          const isObj = typeof item === 'object' && item !== null;
-          const text = isObj ? item.text : item;
-          const badge = isObj ? item.badge : null;
-          const tooltip = isObj ? item.tooltip : null;
-
-          return (
-            <li class="leading-normal flex items-center gap-2">
-              <span class="w-1 h-1 rounded-full bg-border-subtle flex-shrink-0"></span>
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <span>{text}</span>
-                {badge && (
-                  <span class="font-mono text-[9px] uppercase tracking-wider px-1.5 py-[0.5px] rounded bg-black/[0.03] dark:bg-white/[0.05] border border-border-subtle text-text-muted select-none">
-                    {badge}
-                  </span>
-                )}
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+  <!-- Card 2: NOW / ACTIVE FOCUS (Strictly Zero Emojis) -->
+  <div class="w-full p-4 sm:p-4.5 rounded-xl border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.02] dark:bg-[#080808] flex flex-col shadow-sm">
+    <div class="text-[9.5px] uppercase font-mono tracking-widest text-text-muted font-medium mb-3 select-none">
+      NOW
     </div>
-  </div>
-</section>
 
-<!-- Photo Lightbox Modal -->
-<div 
-  id="photo-modal" 
-  class="fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-150"
-  role="dialog"
-  aria-modal="true"
-  aria-hidden="true"
->
-  <div 
-    id="photo-modal-backdrop"
-    class="absolute inset-0 bg-black/60 backdrop-blur-sm cursor-pointer"
-  ></div>
-  <div 
-    class="relative bg-modal-bg border border-border-subtle p-2.5 sm:p-3 rounded-lg shadow-2xl max-w-[340px] w-full flex flex-col items-center"
-  >
-    <button 
-      id="photo-modal-close-btn"
-      class="absolute top-2.5 right-2.5 text-text-secondary hover:text-text-primary p-1 font-mono text-xs focus:outline-none transition-colors z-10"
-      aria-label="Close photo"
-    >
-      <span class="text-[10px] uppercase font-mono text-text-muted mr-1">ESC</span>
-      <span class="text-sm leading-none">✕</span>
-    </button>
-    <img 
-      src={photoUrl} 
-      alt="Soham Sangole" 
-      class="max-w-full max-h-[70vh] w-auto h-auto rounded object-contain ring-1 ring-border-subtle block"
-    />
+    <ul class="flex flex-col space-y-2.5 text-[12px] text-text-secondary">
+      {PORTFOLIO_DATA.now.items.map((item) => {
+        const isObj = typeof item === 'object' && item !== null;
+        const text = isObj ? item.text : item;
+        const badge = isObj ? item.badge : null;
+        const isSpotify = text.toLowerCase().includes('spotify');
+
+        return (
+          <li class="flex items-center gap-2">
+            <!-- Clean Micro Engineering Indicator (No Emojis) -->
+            {isSpotify ? (
+              <span class="flex items-center gap-[2px] h-3 w-3 text-emerald-600 dark:text-emerald-400 shrink-0" aria-label="Audio wave">
+                <span class="w-[2px] h-1.5 bg-current rounded-full animate-pulse"></span>
+                <span class="w-[2px] h-3 bg-current rounded-full animate-pulse" style="animation-delay: 150ms"></span>
+                <span class="w-[2px] h-2 bg-current rounded-full animate-pulse" style="animation-delay: 300ms"></span>
+              </span>
+            ) : (
+              <span class="font-mono text-[10px] text-text-muted select-none shrink-0">&gt;</span>
+            )}
+
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-text-primary/90">{text}</span>
+              {badge && (
+                <span class="font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded border border-black/10 dark:border-white/15 bg-black/[0.03] dark:bg-white/[0.05] text-text-muted select-none">
+                  {badge}
+                </span>
+              )}
+            </div>
+          </li>
+        );
+      })}
+    </ul>
   </div>
 </div>
-
-<script is:inline>
-  (function() {
-    function setupPhotoModal() {
-      var trigger = document.getElementById('photo-modal-trigger');
-      var modal = document.getElementById('photo-modal');
-      var backdrop = document.getElementById('photo-modal-backdrop');
-      var closeBtn = document.getElementById('photo-modal-close-btn');
-
-      function openModal() {
-        if (!modal) return;
-        modal.classList.remove('opacity-0', 'pointer-events-none');
-        modal.classList.add('opacity-100', 'pointer-events-auto');
-        modal.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
-      }
-
-      function closeModal() {
-        if (!modal) return;
-        modal.classList.remove('opacity-100', 'pointer-events-auto');
-        modal.classList.add('opacity-0', 'pointer-events-none');
-        modal.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
-      }
-
-      trigger?.addEventListener('click', function(e) {
-        e.preventDefault();
-        openModal();
-      });
-
-      closeBtn?.addEventListener('click', closeModal);
-      backdrop?.addEventListener('click', closeModal);
-
-      window.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          closeModal();
-        }
-      });
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', setupPhotoModal);
-    } else {
-      setupPhotoModal();
-    }
-  })();
-</script>

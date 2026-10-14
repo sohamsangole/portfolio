@@ -9,45 +9,41 @@ const { project } = Astro.props;
 ---
 
 <div 
-  class="project-row group relative w-full px-0 sm:-mx-3 sm:px-3 py-2 sm:py-2.5 rounded transition-all duration-200 hover:bg-black/[0.035] dark:hover:bg-white/[0.04] cursor-pointer border-b border-border-subtle/50 last:border-b-0"
+  class="project-row group relative w-full -mx-3 px-3 py-2 sm:py-2.5 rounded-lg hover:bg-black/[0.04] dark:hover:bg-white/[0.04] transition-all duration-150 cursor-pointer"
   data-project-id={project.id}
   tabindex="0"
   role="button"
   aria-label={`View details for ${project.title}`}
 >
-  <div class="flex items-baseline justify-between gap-3">
-    <div class="flex items-baseline gap-3 sm:gap-4 flex-1 min-w-0">
-      <!-- Project Number -->
-      <span class="font-mono text-xs text-text-secondary group-hover:text-text-primary flex-shrink-0 tracking-wider transition-colors duration-150">
-        {project.number}
-      </span>
+  <div class="flex flex-col space-y-1">
+    <!-- Title & Action Arrow -->
+    <div class="flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5 flex-1 min-w-0">
+        <span class="font-mono text-[11px] text-text-muted group-hover:text-text-primary transition-colors flex-shrink-0 select-none">
+          {project.number}
+        </span>
+        <h3 class="text-xs sm:text-[13.5px] font-medium text-text-primary group-hover:text-black dark:group-hover:text-white transition-colors duration-150 truncate">
+          {project.title}
+        </h3>
+      </div>
 
-      <!-- Title & Details -->
-      <div class="flex-1 min-w-0">
-        <div class="flex items-baseline justify-between gap-2">
-          <h3 class="text-sm sm:text-[15px] font-medium text-text-primary group-hover:text-black dark:group-hover:text-white transition-colors duration-150 break-words whitespace-normal sm:truncate">
-            {project.title}
-          </h3>
-        </div>
-
-        <!-- Description (up to 2 lines on mobile, 1 line on desktop) -->
-        <p class="text-xs sm:text-[13px] text-text-secondary mt-0.5 line-clamp-2 sm:line-clamp-none sm:truncate leading-normal">
-          {project.shortDescription}
-        </p>
-
-        <!-- Technologies -->
-        <div class="flex items-center gap-1.5 text-[11px] text-text-muted mt-0.5 sm:mt-1 font-mono tracking-tight overflow-hidden text-ellipsis whitespace-nowrap">
-          {project.technologies.join(" · ")}
-        </div>
+      <div class="flex items-center flex-shrink-0 text-text-muted group-hover:text-text-primary transition-colors">
+        <svg class="w-3.5 h-3.5 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-150" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="7" y1="17" x2="17" y2="7"></line>
+          <polyline points="7 7 17 7 17 17"></polyline>
+        </svg>
       </div>
     </div>
 
-    <!-- Arrow Indicator -->
-    <div class="flex items-center flex-shrink-0 ml-2">
-      <svg class="w-3.5 h-3.5 text-text-secondary group-hover:text-text-primary transition-all duration-200 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 select-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="7" y1="17" x2="17" y2="7"></line>
-        <polyline points="7 7 17 7 17 17"></polyline>
-      </svg>
+    <!-- Description (1 concise line) -->
+    <p class="text-xs text-text-secondary leading-normal truncate pl-[22px]">
+      {project.shortDescription}
+    </p>
+
+    <!-- Technologies (Monospace list) -->
+    <div class="flex items-center gap-1.5 text-[11px] font-mono text-text-muted tracking-tight truncate pl-[22px] select-none">
+      {project.technologies.join(" · ")}
     </div>
   </div>
 </div>
+

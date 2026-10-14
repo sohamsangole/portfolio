@@ -11,37 +11,27 @@ import CommandMenu from '../components/CommandMenu.astro';
 ---
 
 <Layout>
-  <!-- Latency / System Boot Indicator Bar -->
-  <div id="system-boot-bar" class="fixed top-0 left-0 h-[2px] w-0 bg-emerald-600 dark:bg-emerald-400 z-50 pointer-events-none opacity-0 shadow-[0_0_8px_rgba(16,185,129,0.7)]"></div>
+  <!-- Widescreen 2-Column Split Console (Single-Screen, Zero-Scroll on Desktop) -->
+  <main class="w-full max-w-[1180px] lg:max-w-[1240px] mx-auto px-6 sm:px-10 lg:px-12 py-4 sm:py-5 md:py-6 min-h-screen md:h-screen md:max-h-screen flex flex-col justify-between box-border overflow-y-auto md:overflow-hidden">
+    <!-- Top Bar: Header spanning full width -->
+    <Header />
 
-  <!-- Main Desktop 1-Viewport Container (Scrolls naturally on mobile or ultra-small screens) -->
-  <main class="w-full min-h-screen lg:h-screen lg:max-h-screen flex flex-col justify-start lg:justify-between px-6 sm:px-10 md:px-14 lg:px-16 py-3 sm:py-4 lg:py-5 max-w-[1140px] mx-auto box-border">
-    <!-- Top Section: Header & Hero -->
-    <div class="boot-elem flex flex-col w-full">
-      <Header />
-      <Hero />
+    <!-- Center Stage: Widescreen 2-Column Balanced Grid -->
+    <div class="w-full grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-14 my-auto items-start">
+      <!-- Left Column (5 of 12 cols = ~42%): Identity, Bio, Experience, Now -->
+      <div class="md:col-span-5 flex flex-col space-y-4 sm:space-y-5">
+        <Hero />
+        <ExperienceNow />
+      </div>
+
+      <!-- Right Column (7 of 12 cols = ~58%): Featured Projects & Interactive Architecture -->
+      <div class="md:col-span-7 flex flex-col">
+        <Projects />
+      </div>
     </div>
 
-    <!-- Divider -->
-    <div class="boot-divider w-full border-b border-border-subtle my-1 sm:my-1.5 lg:my-2"></div>
-
-    <!-- Middle Section 1: Experience / Now -->
-    <div class="boot-elem w-full py-0.5">
-      <ExperienceNow />
-    </div>
-
-    <!-- Divider -->
-    <div class="boot-divider w-full border-b border-border-subtle my-1 sm:my-1.5 lg:my-2"></div>
-
-    <!-- Middle Section 2: Projects (rows) -->
-    <div class="boot-elem w-full my-0 lg:my-auto py-0.5">
-      <Projects />
-    </div>
-
-    <!-- Bottom Section: Footer -->
-    <div class="boot-elem flex flex-col w-full mt-2 lg:mt-auto pt-1">
-      <Footer />
-    </div>
+    <!-- Bottom Bar: Footer spanning full width -->
+    <Footer />
   </main>
 
   <!-- Clean System Architecture Modal -->
@@ -53,14 +43,4 @@ import CommandMenu from '../components/CommandMenu.astro';
   <!-- Minimal Command Palette -->
   <CommandMenu />
 </Layout>
-
-<script>
-  import { initSystemBoot } from '../scripts/animations';
-  
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initSystemBoot);
-  } else {
-    initSystemBoot();
-  }
-</script>
 

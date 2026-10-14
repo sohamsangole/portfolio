@@ -2,7 +2,7 @@
 import { PORTFOLIO_DATA } from '../data/portfolioData';
 ---
 
-<footer class="w-full flex items-center justify-between text-[11px] sm:text-xs font-mono tracking-widest text-text-secondary pt-2 pb-1 border-t border-border-subtle/50">
+<footer class="w-full flex items-center justify-between text-[11px] sm:text-xs font-mono tracking-widest text-text-secondary pt-1 pb-1">
   <nav class="flex items-center gap-4 sm:gap-6 flex-wrap">
     <a 
       href="https://github.com/sohamsangole" 
@@ -21,13 +21,31 @@ import { PORTFOLIO_DATA } from '../data/portfolioData';
       LINKEDIN
     </a>
     
-    <a 
-      href="mailto:sasangole2019@gmail.com?subject=Hello%20Soham%20-%20Let's%20Connect&body=Hi%20Soham%2C%0A%0AI%20came%20across%20your%20portfolio%20and%20wanted%20to%20reach%20out%20regarding%20...%0A%0ABest%2C" 
-      class="hover:text-text-primary transition-colors duration-150 py-1 focus:outline-none focus:text-text-primary"
-      title="Open email draft"
-    >
-      EMAIL
-    </a>
+    <div class="inline-flex items-center gap-1.5 py-1">
+      <a 
+        href="mailto:sasangole2019@gmail.com?subject=Hello%20Soham%20-%20Let's%20Connect&body=Hi%20Soham%2C%0A%0AI%20came%20across%20your%20portfolio%20and%20wanted%20to%20reach%20out%20regarding%20...%0A%0ABest%2C" 
+        class="hover:text-text-primary transition-colors duration-150 focus:outline-none focus:text-text-primary"
+        title="Open email draft"
+      >
+        EMAIL
+      </a>
+      <button 
+        id="copy-email-btn"
+        type="button"
+        class="p-0.5 text-text-muted hover:text-text-primary transition-colors duration-150 focus:outline-none cursor-pointer rounded -ml-0.5"
+        title="Copy sasangole2019@gmail.com"
+        aria-label="Copy email address"
+      >
+        <svg id="copy-icon" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        <svg id="check-icon" class="w-3.5 h-3.5 text-emerald-500 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </button>
+      <span id="copied-tooltip" class="hidden text-[9px] font-mono text-emerald-500 uppercase tracking-wider font-medium select-none">COPIED</span>
+    </div>
 
     <a 
       href="#resume" 
@@ -37,15 +55,72 @@ import { PORTFOLIO_DATA } from '../data/portfolioData';
     </a>
   </nav>
 
-  <div class="flex items-center gap-4 text-[10px] text-text-muted tracking-widest">
-    <button 
-      class="command-palette-trigger hidden sm:inline-flex items-center gap-1 hover:text-text-primary transition-colors duration-150 cursor-pointer focus:outline-none"
-      title="Quick Info (⌘K / Ctrl+K)"
-      aria-label="Quick Info"
-    >
-      <span>INFO</span>
-      <span class="text-[9px] opacity-70 font-mono">⌘K</span>
-    </button>
-    <span class="hidden sm:inline">MUMBAI</span>
+  <!-- Passive Right-Hand Anchor: Live Mumbai Local Time -->
+  <div class="flex items-center gap-2 text-[10px] sm:text-[10.5px] font-mono text-text-muted tracking-widest select-none">
+    <span>MUMBAI</span>
+    <span class="text-border-subtle opacity-60">·</span>
+    <span id="mumbai-clock" class="text-text-secondary font-mono">--:-- IST</span>
   </div>
 </footer>
+
+<script is:inline>
+  (function() {
+    function setupFooter() {
+      // Setup Copy Email
+      var btn = document.getElementById('copy-email-btn');
+      var copyIcon = document.getElementById('copy-icon');
+      var checkIcon = document.getElementById('check-icon');
+      var tooltip = document.getElementById('copied-tooltip');
+
+      if (btn && copyIcon && checkIcon) {
+        var resetTimer = null;
+        btn.onclick = function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          navigator.clipboard.writeText('sasangole2019@gmail.com').then(function() {
+            copyIcon.classList.add('hidden');
+            checkIcon.classList.remove('hidden');
+            if (tooltip) tooltip.classList.remove('hidden');
+
+            if (resetTimer) clearTimeout(resetTimer);
+            resetTimer = setTimeout(function() {
+              copyIcon.classList.remove('hidden');
+              checkIcon.classList.add('hidden');
+              if (tooltip) tooltip.classList.add('hidden');
+            }, 1800);
+          }).catch(function(err) {
+            console.error('Could not copy text: ', err);
+          });
+        };
+      }
+
+      // Setup Live Mumbai Time
+      function updateClock() {
+        var clock = document.getElementById('mumbai-clock');
+        if (!clock) return;
+        try {
+          var str = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'Asia/Kolkata',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          }).format(new Date());
+          clock.textContent = str + ' IST';
+        } catch (e) {
+          var d = new Date();
+          clock.textContent = d.getUTCHours().toString().padStart(2, '0') + ':' + d.getUTCMinutes().toString().padStart(2, '0') + ' UTC';
+        }
+      }
+
+      updateClock();
+      setInterval(updateClock, 10000);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupFooter);
+    } else {
+      setupFooter();
+    }
+    document.addEventListener('astro:page-load', setupFooter);
+  })();
+</script>

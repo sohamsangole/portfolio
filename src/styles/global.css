@@ -5,35 +5,35 @@
 @tailwind utilities;
 
 :root {
-  --color-bg: #F7F7F5;
-  --color-text-primary: #111111;
-  --color-text-secondary: #777777;
-  --color-text-muted: #999999;
-  --color-border-subtle: #D9D9D5;
-  --color-border-light: #EAEAEA;
-  --color-row-hover: rgba(0, 0, 0, 0.035);
-  --color-modal-bg: #F7F7F5;
-  --color-cell-empty: #E8E8E4;
-  --color-cell-1: #9BE9A8;
-  --color-cell-2: #40C463;
-  --color-cell-3: #30A14E;
-  --color-cell-4: #216E39;
+  --color-bg: #FFFFFF;
+  --color-text-primary: #000000;
+  --color-text-secondary: rgba(0, 0, 0, 0.75);
+  --color-text-muted: rgba(0, 0, 0, 0.45);
+  --color-border-subtle: rgba(0, 0, 0, 0.18);
+  --color-border-light: rgba(0, 0, 0, 0.1);
+  --color-row-hover: rgba(0, 0, 0, 0.04);
+  --color-modal-bg: #FFFFFF;
+  --color-cell-empty: #ebedf0;
+  --color-cell-1: #9be9a8;
+  --color-cell-2: #40c463;
+  --color-cell-3: #30a14e;
+  --color-cell-4: #216e39;
 }
 
 html.dark {
-  --color-bg: #111110;
-  --color-text-primary: #EDEDEC;
-  --color-text-secondary: #8E8E8A;
-  --color-text-muted: #666662;
-  --color-border-subtle: #282826;
-  --color-border-light: #20201E;
-  --color-row-hover: rgba(255, 255, 255, 0.04);
-  --color-modal-bg: #161615;
-  --color-cell-empty: #262624;
-  --color-cell-1: #0E4429;
-  --color-cell-2: #006D32;
-  --color-cell-3: #26A641;
-  --color-cell-4: #39D353;
+  --color-bg: #000000;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: rgba(255, 255, 255, 0.78);
+  --color-text-muted: rgba(255, 255, 255, 0.48);
+  --color-border-subtle: rgba(255, 255, 255, 0.2);
+  --color-border-light: rgba(255, 255, 255, 0.1);
+  --color-row-hover: rgba(255, 255, 255, 0.06);
+  --color-modal-bg: #000000;
+  --color-cell-empty: #161b22;
+  --color-cell-1: #0e4429;
+  --color-cell-2: #006d32;
+  --color-cell-3: #26a641;
+  --color-cell-4: #39d353;
 }
 
 .cell-level-0 { background-color: var(--color-cell-empty) !important; }
@@ -59,16 +59,16 @@ html.dark {
 
 /* Text Selection Styling */
 ::selection {
-  background-color: #111111 !important;
-  color: #F7F7F5 !important;
+  background-color: #000000 !important;
+  color: #FFFFFF !important;
 }
 
 html.dark ::selection,
 html.dark *::selection,
 .dark ::selection,
 .dark *::selection {
-  background-color: #E2E2DF !important;
-  color: #111110 !important;
+  background-color: #FFFFFF !important;
+  color: #000000 !important;
 }
 
 /* Silky smooth theme switching transition */
