@@ -20,8 +20,11 @@ import { PORTFOLIO_DATA } from '../data/portfolioData';
       title="View GitHub contribution activity"
       aria-label="View GitHub contribution chart"
     >
-      <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-600 group-hover:scale-125 transition-transform duration-150"></span>
-      <span class="underline decoration-border-subtle group-hover:decoration-text-primary underline-offset-2 transition-colors">{PORTFOLIO_DATA.hero.status}</span>
+      <span class="relative flex h-2 w-2 items-center justify-center pointer-events-none">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500/70 opacity-75"></span>
+        <span class="relative inline-block w-1.5 h-1.5 rounded-full bg-emerald-600 group-hover:scale-125 transition-transform duration-150"></span>
+      </span>
+      <span class="underline decoration-border-subtle group-hover:decoration-text-primary underline-offset-2 transition-colors pointer-events-none">{PORTFOLIO_DATA.hero.status}</span>
     </button>
   </div>
 </section>

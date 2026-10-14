@@ -1,12 +1,5 @@
 ---
-import { PORTFOLIO_DATA } from '../data/portfolioData';
-import { getRecentCommits } from '../utils/getRecentCommits';
-
-const recentCommits = await getRecentCommits();
-
-// Generate mock contribution grid data (52 weeks x 7 days)
-const WEEKS = 53;
-const DAYS = 7;
+// Month calculation for rolling 12 months header
 const ALL_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const curMonthIdx = new Date().getMonth();
 const ROLLING_MONTHS = [];
@@ -14,43 +7,14 @@ for (let i = 0; i < 12; i++) {
   ROLLING_MONTHS.push(ALL_MONTHS[(curMonthIdx + 1 + i) % 12]);
 }
 
-// Seeded pseudo-random activity levels (0 to 4) for realistic UI mockup
-const generateMockGrid = () => {
-  const grid = [];
-  for (let w = 0; w < WEEKS; w++) {
-    const week = [];
-    const inActiveCluster = (w >= 0 && w <= 10) || (w >= 14 && w <= 22) || (w >= 44 && w <= 52);
-
-    for (let d = 0; d < DAYS; d++) {
-      const seed = Math.sin(w * 7.13 + d * 19.87) * 10000;
-      const rand = seed - Math.floor(seed);
-      let level = 0;
-
-      if (inActiveCluster) {
-        if (rand > 0.58) level = 1;
-        if (rand > 0.78) level = 2;
-        if (rand > 0.91) level = 3;
-        if (rand > 0.97) level = 4;
-      } else {
-        if (rand > 0.85) level = 1;
-        if (rand > 0.95) level = 2;
-      }
-      
-      const count = level === 0 ? 0 : level * 2 + Math.floor(rand * 3) + 1;
-      week.push({ level, count, weekIndex: w, dayIndex: d });
-    }
-    grid.push(week);
-  }
-  return grid;
-};
-
-const contributionGrid = generateMockGrid();
+// 53 weeks x 7 days skeleton cells
+const SKELETON_CELLS = Array.from({ length: 53 * 7 });
 ---
 
 <!-- GitHub Contribution Activity Dialog -->
 <div 
   id="github-modal" 
-  class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-100"
+  class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-150"
   role="dialog"
   aria-modal="true"
   aria-hidden="true"
@@ -69,7 +33,7 @@ const contributionGrid = generateMockGrid();
     <!-- Close button -->
     <button 
       id="github-modal-close-btn"
-      class="absolute top-3 right-3 sm:top-4 sm:right-4 text-text-secondary hover:text-text-primary p-1.5 sm:p-2 font-mono text-xs tracking-wider flex items-center gap-1.5 focus:outline-none transition-colors"
+      class="absolute top-3 right-3 sm:top-4 sm:right-4 text-text-secondary hover:text-text-primary p-1.5 sm:p-2 font-mono text-xs tracking-wider flex items-center gap-1.5 focus:outline-none transition-colors cursor-pointer"
       aria-label="Close activity modal"
     >
       <span class="text-[10px] sm:text-[11px] uppercase font-mono text-text-muted">ESC</span>
@@ -105,19 +69,22 @@ const contributionGrid = generateMockGrid();
       </div>
     </div>
 
-    <!-- Quick Stats Row -->
+    <!-- Quick Stats Row (With Skeletons while loading) -->
     <div class="grid grid-cols-3 gap-2 sm:gap-3 py-2 sm:py-2.5 border-b border-border-subtle/60 text-xs sm:text-sm font-mono">
       <div class="flex flex-col">
         <span class="text-[9px] sm:text-[10px] uppercase text-text-muted tracking-wider">Activity (1 Year)</span>
-        <span id="github-activity-total" class="text-sm sm:text-lg font-medium text-text-primary mt-0.5">842 contributions</span>
+        <div id="skeleton-total" class="h-5 w-24 bg-black/[0.06] dark:bg-white/[0.08] animate-pulse rounded-sm mt-1"></div>
+        <span id="github-activity-total" class="hidden text-sm sm:text-lg font-medium text-text-primary mt-0.5"></span>
       </div>
       <div class="flex flex-col">
         <span class="text-[9px] sm:text-[10px] uppercase text-text-muted tracking-wider">Current Streak</span>
-        <span id="github-current-streak" class="text-sm sm:text-lg font-medium text-text-primary mt-0.5">18 days</span>
+        <div id="skeleton-current-streak" class="h-5 w-16 bg-black/[0.06] dark:bg-white/[0.08] animate-pulse rounded-sm mt-1"></div>
+        <span id="github-current-streak" class="hidden text-sm sm:text-lg font-medium text-text-primary mt-0.5"></span>
       </div>
       <div class="flex flex-col">
         <span class="text-[9px] sm:text-[10px] uppercase text-text-muted tracking-wider">Longest Streak</span>
-        <span id="github-longest-streak" class="text-sm sm:text-lg font-medium text-text-primary mt-0.5">46 days</span>
+        <div id="skeleton-longest-streak" class="h-5 w-16 bg-black/[0.06] dark:bg-white/[0.08] animate-pulse rounded-sm mt-1"></div>
+        <span id="github-longest-streak" class="hidden text-sm sm:text-lg font-medium text-text-primary mt-0.5"></span>
       </div>
     </div>
 
@@ -131,7 +98,7 @@ const contributionGrid = generateMockGrid();
 
         <!-- Days & Grid Container -->
         <div class="flex gap-2">
-          <!-- Day Labels (Mon, Wed, Fri aligned to rows 1, 3, 5; row 0 is Sunday) -->
+          <!-- Day Labels (Mon, Wed, Fri) -->
           <div class="grid grid-rows-7 gap-[2.5px] py-1.5 sm:py-2 text-[9px] font-mono text-text-muted w-6 select-none">
             <span class="h-[10px] leading-[10px]"></span>
             <span class="h-[10px] leading-[10px]">Mon</span>
@@ -142,22 +109,17 @@ const contributionGrid = generateMockGrid();
             <span class="h-[10px] leading-[10px]"></span>
           </div>
 
-          <!-- Heatmap Grid -->
+          <!-- Heatmap Grid (Initial Skeleton Cells) -->
           <div id="github-contributions-grid" class="flex-1 grid grid-flow-col grid-rows-7 gap-[2.5px] p-1.5 sm:p-2 bg-black/[0.02] dark:bg-white/[0.02] border border-border-subtle/50 rounded">
-            {contributionGrid.map((week) => (
-              week.map((cell) => (
-                <div 
-                  class={`w-[10px] h-[10px] rounded-[1.5px] cell-level-${cell.level} transition-opacity duration-100 hover:opacity-80 cursor-pointer`}
-                  title={`${cell.count} contributions`}
-                ></div>
-              ))
+            {SKELETON_CELLS.map(() => (
+              <div class="w-[10px] h-[10px] rounded-[1.5px] bg-black/[0.04] dark:bg-white/[0.05] animate-pulse"></div>
             ))}
           </div>
         </div>
 
         <!-- Legend Footer -->
         <div class="flex items-center justify-between mt-1 sm:mt-2 text-[9px] sm:text-[10px] font-mono text-text-muted select-none">
-          <span>Recent repository contributions</span>
+          <span id="grid-status-label">Live GitHub repository activity</span>
           <div class="flex items-center gap-1.5">
             <span>Less</span>
             <span class="w-2.5 h-2.5 cell-level-0 rounded-[1px] inline-block"></span>
@@ -171,52 +133,41 @@ const contributionGrid = generateMockGrid();
       </div>
     </div>
 
-    <!-- Recent Commits Section -->
+    <!-- Recent Commits Section (With Skeletons) -->
     <div id="github-recent-commits-section" class="pt-2 sm:pt-2.5 border-t border-border-subtle flex flex-col space-y-1 sm:space-y-2">
       <div class="flex items-center justify-between text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-text-secondary select-none">
         <span class="font-medium text-text-primary">RECENT COMMITS</span>
       </div>
 
-      <div id="github-push-events-list" class="flex flex-col space-y-0.5 text-xs font-mono pb-0.5">
-        {recentCommits.map((c) => (
-          <div class="flex items-center justify-between py-1 sm:py-1.5 -mx-1.5 sm:-mx-2 px-1.5 sm:px-2 rounded hover:bg-black/[0.025] dark:hover:bg-white/[0.03] border-b border-border-subtle/30 last:border-0 text-text-secondary hover:text-text-primary transition-colors gap-2 sm:gap-3">
-            <div class="flex items-baseline gap-2 min-w-0 pr-2">
-              <a 
-                href={`https://github.com/sohamsangole/${c.repo}`} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                class="font-medium text-text-primary no-underline hover:underline flex-shrink-0"
-              >
-                {c.repo}
-              </a>
-              <span class="text-text-muted text-[10px] select-none flex-shrink-0">/</span>
-              <a 
-                href={c.url} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                class="text-text-secondary hover:text-text-primary text-[11px] sm:text-xs truncate max-w-[240px] sm:max-w-[440px] no-underline hover:underline" 
-                title={c.message}
-              >
-                {c.message}
-              </a>
-            </div>
-            <span class="text-[10px] sm:text-[11px] text-text-muted flex-shrink-0 font-mono">{c.date}</span>
-          </div>
-        ))}
+      <!-- Commits Loading Skeleton -->
+      <div id="github-commits-skeleton" class="flex flex-col space-y-2 py-1">
+        <div class="flex items-center justify-between">
+          <div class="h-3.5 w-52 bg-black/[0.06] dark:bg-white/[0.08] animate-pulse rounded-sm"></div>
+          <div class="h-3 w-12 bg-black/[0.06] dark:bg-white/[0.08] animate-pulse rounded-sm"></div>
+        </div>
+        <div class="flex items-center justify-between">
+          <div class="h-3.5 w-64 bg-black/[0.06] dark:bg-white/[0.08] animate-pulse rounded-sm"></div>
+          <div class="h-3 w-14 bg-black/[0.06] dark:bg-white/[0.08] animate-pulse rounded-sm"></div>
+        </div>
+        <div class="flex items-center justify-between">
+          <div class="h-3.5 w-44 bg-black/[0.06] dark:bg-white/[0.08] animate-pulse rounded-sm"></div>
+          <div class="h-3 w-10 bg-black/[0.06] dark:bg-white/[0.08] animate-pulse rounded-sm"></div>
+        </div>
       </div>
+
+      <!-- Commits Live List -->
+      <div id="github-push-events-list" class="hidden flex flex-col space-y-0.5 text-xs font-mono pb-0.5"></div>
     </div>
   </div>
 </div>
 
-<script is:inline>
+<script>
   (function() {
-    var hasFetched = false;
-
-    function formatRelativeDate(isoString) {
+    function formatRelativeDate(isoString: string) {
       try {
         var date = new Date(isoString);
         var now = new Date();
-        var diffSec = Math.floor((now - date) / 1000);
+        var diffSec = Math.floor((now.getTime() - date.getTime()) / 1000);
         if (diffSec < 60) return 'just now';
         var diffMin = Math.floor(diffSec / 60);
         if (diffMin < 60) return diffMin + 'm ago';
@@ -231,108 +182,67 @@ const contributionGrid = generateMockGrid();
       }
     }
 
-    function fetchLiveGithubData() {
-      if (hasFetched) return;
-      hasFetched = true;
+    function renderSkeletonGrid(gridEl: HTMLElement) {
+      gridEl.replaceChildren();
+      for (var i = 0; i < 53 * 7; i++) {
+        var skel = document.createElement('div');
+        skel.className = 'w-[10px] h-[10px] rounded-[1.5px] bg-black/[0.04] dark:bg-white/[0.05] animate-pulse';
+        gridEl.appendChild(skel);
+      }
+    }
+
+    function fetchFreshGithubData() {
+      var skelTotal = document.getElementById('skeleton-total');
+      var skelCur = document.getElementById('skeleton-current-streak');
+      var skelLong = document.getElementById('skeleton-longest-streak');
 
       var totalEl = document.getElementById('github-activity-total');
       var currentStreakEl = document.getElementById('github-current-streak');
       var longestStreakEl = document.getElementById('github-longest-streak');
       var gridEl = document.getElementById('github-contributions-grid');
+
+      var commitsSkel = document.getElementById('github-commits-skeleton');
       var pushListEl = document.getElementById('github-push-events-list');
 
-      function renderCommits(commits) {
-        if (!pushListEl || !commits || commits.length === 0) return;
-        pushListEl.replaceChildren();
-        commits.forEach(function(c) {
-          var row = document.createElement('div');
-          row.className = 'flex items-center justify-between py-1 sm:py-1.5 -mx-1.5 sm:-mx-2 px-1.5 sm:px-2 rounded hover:bg-black/[0.025] dark:hover:bg-white/[0.03] border-b border-border-subtle/30 last:border-0 text-text-secondary hover:text-text-primary transition-colors gap-2 sm:gap-3';
+      // 1. Reset to skeleton states on every fresh open (no cache)
+      if (skelTotal) skelTotal.classList.remove('hidden');
+      if (skelCur) skelCur.classList.remove('hidden');
+      if (skelLong) skelLong.classList.remove('hidden');
 
-          var leftCol = document.createElement('div');
-          leftCol.className = 'flex items-baseline gap-2 min-w-0 pr-2';
+      if (totalEl) totalEl.classList.add('hidden');
+      if (currentStreakEl) currentStreakEl.classList.add('hidden');
+      if (longestStreakEl) longestStreakEl.classList.add('hidden');
 
-          var repoLink = document.createElement('a');
-          repoLink.href = 'https://github.com/sohamsangole/' + encodeURIComponent(c.repo || '');
-          repoLink.target = '_blank';
-          repoLink.rel = 'noopener noreferrer';
-          repoLink.className = 'font-medium text-text-primary no-underline hover:underline flex-shrink-0';
-          repoLink.textContent = c.repo || '';
-
-          var slash = document.createElement('span');
-          slash.className = 'text-text-muted text-[10px] select-none flex-shrink-0';
-          slash.textContent = '/';
-
-          var commitLink = document.createElement('a');
-          var isSafeUrl = typeof c.url === 'string' && c.url.startsWith('https://github.com/');
-          commitLink.href = isSafeUrl ? c.url : '#';
-          commitLink.target = '_blank';
-          commitLink.rel = 'noopener noreferrer';
-          commitLink.className = 'text-text-secondary hover:text-text-primary text-[11px] sm:text-xs truncate max-w-[240px] sm:max-w-[440px] no-underline hover:underline';
-          commitLink.title = c.message || '';
-          commitLink.textContent = c.message || '';
-
-          leftCol.appendChild(repoLink);
-          leftCol.appendChild(slash);
-          leftCol.appendChild(commitLink);
-
-          var dateSpan = document.createElement('span');
-          dateSpan.className = 'text-[10px] sm:text-[11px] text-text-muted flex-shrink-0 font-mono';
-          dateSpan.textContent = c.date || '';
-
-          row.appendChild(leftCol);
-          row.appendChild(dateSpan);
-          pushListEl.appendChild(row);
-        });
-      }
-
-      // Dynamically fetch recent commits live in the browser (single lightweight request across all public repos)
+      if (commitsSkel) commitsSkel.classList.remove('hidden');
       if (pushListEl) {
-        fetch('https://api.github.com/search/commits?q=author:sohamsangole&sort=author-date&order=desc&per_page=4')
-          .then(function(res) {
-            if (!res.ok) throw new Error('Search commits failed');
-            return res.json();
-          })
-          .then(function(data) {
-            if (!data || !Array.isArray(data.items) || data.items.length === 0) return;
-            var commits = data.items.map(function(item) {
-              var repoName = item.repository ? item.repository.name : 'portfolio';
-              var rawMsg = (item.commit && item.commit.message) ? item.commit.message : '';
-              var firstLine = rawMsg.split('\n')[0].trim();
-              var shaShort = (item.sha || '').substring(0, 7);
-              var dateStr = (item.commit && item.commit.author && item.commit.author.date) || '';
-              return {
-                repo: repoName,
-                message: firstLine || ('Commit ' + shaShort),
-                sha: shaShort,
-                url: item.html_url || ('https://github.com/sohamsangole/' + repoName + '/commit/' + item.sha),
-                date: formatRelativeDate(dateStr)
-              };
-            });
-            renderCommits(commits);
-          })
-          .catch(function() {
-            // Keep pre-rendered commits if search fails or rate limits
-          });
+        pushListEl.classList.add('hidden');
+        pushListEl.replaceChildren();
       }
 
-      // Fetch contribution activity
+      if (gridEl) {
+        renderSkeletonGrid(gridEl);
+      }
+
+      // 2. Fetch fresh live contribution data (no cache)
       fetch('https://github-contributions-api.jogruber.de/v4/sohamsangole?y=last', { cache: 'no-cache' })
         .then(function(res) {
-          if (!res.ok) throw new Error('API error');
+          if (!res.ok) throw new Error('Failed to load contributions');
           return res.json();
         })
         .then(function(data) {
           if (!data || !data.contributions || !Array.isArray(data.contributions)) return;
 
           var contributions = data.contributions;
-          var totalCount = 0;
+          var totalCount = (data.total && typeof data.total.lastYear === 'number') 
+            ? data.total.lastYear 
+            : contributions.reduce(function(acc: number, c: any) { return acc + (c.count || 0); }, 0);
+
           var maxStreak = 0;
           var curStreak = 0;
           var tempStreak = 0;
 
           for (var i = 0; i < contributions.length; i++) {
             var count = contributions[i].count || 0;
-            totalCount += count;
             if (count > 0) {
               tempStreak++;
               if (tempStreak > maxStreak) maxStreak = tempStreak;
@@ -341,7 +251,7 @@ const contributionGrid = generateMockGrid();
             }
           }
 
-          // Compute current active streak from end backwards
+          // Active current streak from end backwards
           for (var i = contributions.length - 1; i >= 0; i--) {
             if (contributions[i].count > 0) {
               curStreak++;
@@ -352,9 +262,23 @@ const contributionGrid = generateMockGrid();
             }
           }
 
-          if (totalEl) totalEl.textContent = totalCount + ' contributions';
-          if (currentStreakEl) currentStreakEl.textContent = curStreak + ' days';
-          if (longestStreakEl) longestStreakEl.textContent = maxStreak + ' days';
+          // Reveal stats
+          if (skelTotal) skelTotal.classList.add('hidden');
+          if (skelCur) skelCur.classList.add('hidden');
+          if (skelLong) skelLong.classList.add('hidden');
+
+          if (totalEl) {
+            totalEl.textContent = totalCount + ' contributions';
+            totalEl.classList.remove('hidden');
+          }
+          if (currentStreakEl) {
+            currentStreakEl.textContent = curStreak + ' days';
+            currentStreakEl.classList.remove('hidden');
+          }
+          if (longestStreakEl) {
+            longestStreakEl.textContent = maxStreak + ' days';
+            longestStreakEl.classList.remove('hidden');
+          }
 
           // Render live cells with accurate Sunday-to-Saturday row alignment
           if (gridEl && contributions.length > 0) {
@@ -371,21 +295,113 @@ const contributionGrid = generateMockGrid();
               gridEl.appendChild(emptyPad);
             }
 
-            contributions.forEach(function(c) {
+            contributions.forEach(function(c: any) {
               var cell = document.createElement('div');
               cell.className = 'w-[10px] h-[10px] rounded-[1.5px] cell-level-' + (c.level || 0) + ' transition-opacity duration-100 hover:opacity-80 cursor-pointer';
-              cell.title = c.count + ' contributions on ' + c.date;
+              cell.title = (c.count || 0) + ' contributions on ' + c.date;
               gridEl.appendChild(cell);
             });
           }
         })
         .catch(function(err) {
-          console.debug('Live contributions sync fallback to static data:', err);
+          console.debug('Failed live contributions fetch:', err);
+          if (skelTotal) skelTotal.classList.add('hidden');
+          if (totalEl) {
+            totalEl.textContent = 'Unavailable';
+            totalEl.classList.remove('hidden');
+          }
+        });
+
+      // 3. Fetch fresh recent public events / commits
+      fetch('https://api.github.com/users/sohamsangole/events/public?per_page=12', { cache: 'no-cache' })
+        .then(function(res) {
+          if (!res.ok) throw new Error('GitHub API rate limited or unavailable');
+          return res.json();
+        })
+        .then(function(events) {
+          if (!pushListEl) return;
+          if (!Array.isArray(events) || events.length === 0) throw new Error('No events found');
+
+          // Extract push commit events
+          var pushEvents = events.filter(function(e: any) {
+            return e.type === 'PushEvent' && e.payload && Array.isArray(e.payload.commits) && e.payload.commits.length > 0;
+          });
+
+          var collectedCommits: any[] = [];
+          pushEvents.forEach(function(e: any) {
+            var repoName = (e.repo && e.repo.name ? e.repo.name : 'portfolio').replace(/^sohamsangole\//i, '');
+            e.payload.commits.forEach(function(cm: any) {
+              collectedCommits.push({
+                repo: repoName,
+                message: (cm.message || '').split('\n')[0].trim() || 'Commit ' + (cm.sha || '').substring(0, 7),
+                sha: (cm.sha || '').substring(0, 7),
+                url: 'https://github.com/' + (e.repo ? e.repo.name : 'sohamsangole/' + repoName) + '/commit/' + cm.sha,
+                date: formatRelativeDate(e.created_at)
+              });
+            });
+          });
+
+          if (collectedCommits.length === 0) throw new Error('No push commits');
+
+          if (commitsSkel) commitsSkel.classList.add('hidden');
+          pushListEl.replaceChildren();
+
+          collectedCommits.slice(0, 4).forEach(function(c) {
+            var row = document.createElement('div');
+            row.className = 'flex items-center justify-between py-1 sm:py-1.5 -mx-1.5 sm:-mx-2 px-1.5 sm:px-2 rounded hover:bg-black/[0.025] dark:hover:bg-white/[0.03] border-b border-border-subtle/30 last:border-0 text-text-secondary hover:text-text-primary transition-colors gap-2 sm:gap-3';
+
+            var leftCol = document.createElement('div');
+            leftCol.className = 'flex items-baseline gap-2 min-w-0 pr-2';
+
+            var repoLink = document.createElement('a');
+            repoLink.href = 'https://github.com/sohamsangole/' + encodeURIComponent(c.repo);
+            repoLink.target = '_blank';
+            repoLink.rel = 'noopener noreferrer';
+            repoLink.className = 'font-medium text-text-primary no-underline hover:underline flex-shrink-0';
+            repoLink.textContent = c.repo;
+
+            var slash = document.createElement('span');
+            slash.className = 'text-text-muted text-[10px] select-none flex-shrink-0';
+            slash.textContent = '/';
+
+            var commitLink = document.createElement('a');
+            commitLink.href = c.url;
+            commitLink.target = '_blank';
+            commitLink.rel = 'noopener noreferrer';
+            commitLink.className = 'text-text-secondary hover:text-text-primary text-[11px] sm:text-xs truncate max-w-[240px] sm:max-w-[440px] no-underline hover:underline';
+            commitLink.title = c.message;
+            commitLink.textContent = c.message;
+
+            leftCol.appendChild(repoLink);
+            leftCol.appendChild(slash);
+            leftCol.appendChild(commitLink);
+
+            var dateSpan = document.createElement('span');
+            dateSpan.className = 'text-[10px] sm:text-[11px] text-text-muted flex-shrink-0 font-mono';
+            dateSpan.textContent = c.date;
+
+            row.appendChild(leftCol);
+            row.appendChild(dateSpan);
+            pushListEl.appendChild(row);
+          });
+
+          pushListEl.classList.remove('hidden');
+        })
+        .catch(function() {
+          // Clean non-mock fallback when unauthenticated GitHub API rate limits
+          if (commitsSkel) commitsSkel.classList.add('hidden');
+          if (pushListEl) {
+            pushListEl.replaceChildren();
+            var notice = document.createElement('div');
+            notice.className = 'py-1.5 text-[11px] font-mono text-text-muted flex items-center justify-between';
+            notice.innerHTML = '<span>GitHub API rate limit reached</span><a href="https://github.com/sohamsangole" target="_blank" rel="noopener noreferrer" class="hover:text-text-primary underline">View activity on GitHub ↗</a>';
+            pushListEl.appendChild(notice);
+            pushListEl.classList.remove('hidden');
+          }
         });
     }
 
     function setupGithubModal() {
-      var trigger = document.getElementById('activity-modal-trigger');
       var modal = document.getElementById('github-modal');
       var backdrop = document.getElementById('github-modal-backdrop');
       var closeBtn = document.getElementById('github-modal-close-btn');
@@ -396,7 +412,9 @@ const contributionGrid = generateMockGrid();
         modal.classList.add('opacity-100', 'pointer-events-auto');
         modal.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
-        fetchLiveGithubData();
+
+        // Load fresh data with skeleton states
+        fetchFreshGithubData();
       }
 
       function closeModal() {
@@ -407,9 +425,13 @@ const contributionGrid = generateMockGrid();
         document.body.style.overflow = '';
       }
 
-      trigger?.addEventListener('click', function(e) {
-        e.preventDefault();
-        openModal();
+      document.addEventListener('click', function(e) {
+        var target = e.target as HTMLElement | null;
+        if (target && target.closest('#activity-modal-trigger')) {
+          e.preventDefault();
+          e.stopPropagation();
+          openModal();
+        }
       });
 
       closeBtn?.addEventListener('click', closeModal);
@@ -427,5 +449,6 @@ const contributionGrid = generateMockGrid();
     } else {
       setupGithubModal();
     }
+    document.addEventListener('astro:page-load', setupGithubModal);
   })();
 </script>
