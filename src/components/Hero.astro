@@ -15,7 +15,7 @@ const photoUrl = `${baseUrl}/soham.png`;
       title="Click to view full photo"
       aria-label="View Soham's photo"
     >
-      <div class="relative w-13 h-13 sm:w-14 sm:h-14 rounded-full overflow-hidden ring-1 ring-border-subtle/90 dark:ring-white/15 shadow-sm transition-all duration-300 group-hover:ring-text-primary/40 group-hover:scale-[1.04]">
+      <div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden shrink-0 ring-1 ring-border-subtle/90 dark:ring-white/15 shadow-sm transition-all duration-300 group-hover:ring-text-primary/40 group-hover:scale-[1.04]">
         <img 
           src={photoUrl} 
           alt="Soham Sangole" 
@@ -73,10 +73,10 @@ const photoUrl = `${baseUrl}/soham.png`;
   >
     <button 
       id="photo-modal-close-btn"
-      class="absolute top-2.5 right-2.5 text-text-secondary hover:text-text-primary p-1 font-mono text-xs focus:outline-none transition-colors z-10"
+      class="absolute top-2 right-2 text-text-secondary hover:text-text-primary p-2 font-mono text-xs focus:outline-none transition-colors z-10 cursor-pointer flex items-center"
       aria-label="Close photo"
     >
-      <span class="text-[10px] uppercase font-mono text-text-muted mr-1">ESC</span>
+      <span class="text-[10px] uppercase font-mono text-text-muted hidden sm:inline mr-1">ESC</span>
       <span class="text-sm leading-none">✕</span>
     </button>
     <img 

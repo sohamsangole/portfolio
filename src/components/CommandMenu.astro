@@ -16,7 +16,7 @@
   <!-- Spacious Editorial Card Container -->
   <div 
     id="quick-info-container"
-    class="relative w-full max-w-lg bg-modal-bg border border-border-subtle shadow-2xl p-7 sm:p-9 rounded-none text-xs z-10 select-none"
+    class="relative w-full max-w-lg bg-modal-bg border border-border-subtle shadow-2xl p-5 sm:p-8 rounded-xl sm:rounded-none text-xs z-10 select-none max-h-[90vh] overflow-y-auto"
   >
     <!-- Top Header: Title & Close -->
     <div class="flex items-start justify-between pb-5 border-b border-border-subtle">
@@ -35,10 +35,10 @@
       <!-- Close Button -->
       <button 
         id="quick-info-close-btn"
-        class="text-text-secondary hover:text-text-primary font-mono text-xs tracking-wider flex items-center gap-1.5 focus:outline-none transition-colors cursor-pointer py-1 px-1.5 -mr-1"
+        class="text-text-secondary hover:text-text-primary font-mono text-xs tracking-wider flex items-center gap-1.5 focus:outline-none transition-colors cursor-pointer p-2 -mr-2 -mt-1 rounded hover:bg-black/5 dark:hover:bg-white/5"
         aria-label="Close modal"
       >
-        <span class="text-[10px] uppercase font-mono text-text-muted">ESC</span>
+        <span class="text-[10px] uppercase font-mono text-text-muted hidden sm:inline">ESC</span>
         <span class="text-base leading-none">✕</span>
       </button>
     </div>
@@ -50,7 +50,7 @@
         <span class="text-text-muted w-20 flex-shrink-0">Email</span>
         <a 
           href="mailto:sasangole2019@gmail.com"
-          class="text-text-primary hover:text-black dark:hover:text-white underline underline-offset-4 decoration-border-subtle hover:decoration-text-primary transition-colors text-right"
+          class="text-text-primary hover:text-black dark:hover:text-white underline underline-offset-4 decoration-border-subtle hover:decoration-text-primary transition-colors text-right break-all sm:break-normal"
         >
           sasangole2019@gmail.com
         </a>
@@ -98,7 +98,7 @@
         title="Copy complete info card (Shortcut: C)"
       >
         <span id="copy-all-text">COPY INFO</span>
-        <kbd class="text-[9px] text-text-muted border border-border-subtle/60 px-1 py-0.2 rounded">C</kbd>
+        <kbd class="text-[9px] text-text-muted border border-border-subtle/60 px-1 py-0.2 rounded hidden sm:inline">C</kbd>
       </button>
     </div>
   </div>
@@ -202,9 +202,10 @@
           return;
         }
 
-        // Single key shortcuts when not typing in an input
+        // Single key shortcuts only on desktop (pointer: fine) when not typing in an input
+        var isDesktop = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
         var activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
-        if (activeTag !== 'input' && activeTag !== 'textarea') {
+        if (isDesktop && activeTag !== 'input' && activeTag !== 'textarea') {
           if (e.key === '?' || (e.key === 'i' && !hasModifier)) {
             if (modal.style.display !== 'flex') {
               e.preventDefault();

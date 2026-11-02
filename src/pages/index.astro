@@ -12,12 +12,12 @@ import CommandMenu from '../components/CommandMenu.astro';
 
 <Layout>
   <!-- Widescreen 2-Column Split Console (Single-Screen, Zero-Scroll on Desktop) -->
-  <main class="w-full max-w-[1180px] lg:max-w-[1240px] mx-auto px-6 sm:px-10 lg:px-12 py-4 sm:py-5 md:py-6 min-h-screen md:h-screen md:max-h-screen flex flex-col justify-between box-border overflow-y-auto md:overflow-hidden">
+  <main class="w-full max-w-[1180px] lg:max-w-[1240px] mx-auto px-4 sm:px-10 lg:px-12 py-3.5 sm:py-5 md:py-6 min-h-[100dvh] min-h-screen md:h-screen md:max-h-screen flex flex-col justify-between box-border overflow-y-auto md:overflow-hidden">
     <!-- Top Bar: Header spanning full width -->
     <Header />
 
     <!-- Center Stage: Widescreen 2-Column Balanced Grid -->
-    <div class="w-full grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-14 my-auto items-start">
+    <div class="w-full grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 lg:gap-14 my-auto items-start">
       <!-- Left Column (5 of 12 cols = ~42%): Identity, Bio, Experience, Now -->
       <div class="md:col-span-5 flex flex-col space-y-4 sm:space-y-5">
         <Hero />

@@ -2,8 +2,15 @@
 import { PORTFOLIO_DATA } from '../data/portfolioData';
 ---
 
-<footer class="w-full flex items-center justify-between text-[11px] sm:text-xs font-mono tracking-widest text-text-secondary pt-1 pb-1">
-  <nav class="flex items-center gap-4 sm:gap-6 flex-wrap">
+<footer class="w-full flex flex-wrap items-center justify-between text-[11px] sm:text-xs font-mono tracking-widest text-text-secondary pt-2 pb-2 sm:pt-1 sm:pb-1 gap-y-2">
+  <nav class="flex items-center gap-3.5 sm:gap-6 flex-wrap">
+    <button 
+      type="button" 
+      class="command-palette-trigger hover:text-text-primary transition-colors duration-150 relative py-1 focus:outline-none focus:text-text-primary cursor-pointer uppercase font-mono text-[11px] sm:text-xs tracking-widest"
+      title="Open quick info card"
+    >
+      INFO
+    </button>
     <a 
       href="https://github.com/sohamsangole" 
       target="_blank" 
@@ -32,7 +39,7 @@ import { PORTFOLIO_DATA } from '../data/portfolioData';
       <button 
         id="copy-email-btn"
         type="button"
-        class="p-0.5 text-text-muted hover:text-text-primary transition-colors duration-150 focus:outline-none cursor-pointer rounded -ml-0.5"
+        class="p-1 text-text-muted hover:text-text-primary transition-colors duration-150 focus:outline-none cursor-pointer rounded -ml-0.5"
         title="Copy sasangole2019@gmail.com"
         aria-label="Copy email address"
       >

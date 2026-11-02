@@ -28,7 +28,7 @@ const SKELETON_CELLS = Array.from({ length: 53 * 7 });
   <!-- Modal Container -->
   <div 
     id="github-modal-container"
-    class="relative w-full max-w-3xl bg-modal-bg border border-border-subtle shadow-2xl p-4 sm:px-7 sm:py-5.5 rounded-none max-h-[90vh] sm:max-h-[95vh] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+    class="relative w-full max-w-3xl bg-modal-bg border border-border-subtle shadow-2xl p-4 sm:px-7 sm:py-5.5 rounded-xl sm:rounded-none max-h-[90vh] sm:max-h-[95vh] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
   >
     <!-- Close button -->
     <button 
@@ -36,7 +36,7 @@ const SKELETON_CELLS = Array.from({ length: 53 * 7 });
       class="absolute top-3 right-3 sm:top-4 sm:right-4 text-text-secondary hover:text-text-primary p-1.5 sm:p-2 font-mono text-xs tracking-wider flex items-center gap-1.5 focus:outline-none transition-colors cursor-pointer"
       aria-label="Close activity modal"
     >
-      <span class="text-[10px] sm:text-[11px] uppercase font-mono text-text-muted">ESC</span>
+      <span class="text-[10px] sm:text-[11px] uppercase font-mono text-text-muted hidden sm:inline">ESC</span>
       <span class="text-sm sm:text-base leading-none">✕</span>
     </button>
 
